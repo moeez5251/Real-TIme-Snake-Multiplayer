@@ -1,0 +1,117 @@
+// src/components/Settings.tsx
+import { motion } from 'framer-motion'
+import { FaCog, FaMoon, FaSun, FaHome, FaCrown, FaStore, FaSignOutAlt, FaChevronLeft } from 'react-icons/fa'
+import { GiSnake } from 'react-icons/gi'
+import { usePage } from '../context/PageContext'
+import { useState, useEffect } from 'react'
+import Aside from './aside'
+
+export default function Settings() {
+  const { setCurrentPage } = usePage()
+  const [darkMode, setDarkMode] = useState(true)
+
+  // Sync with system preference on first load + handle changes
+  useEffect(() => {
+    // Check system preference
+    if (
+      localStorage.theme === 'dark' ||
+      (!('theme' in localStorage) &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches)
+    ) {
+      document.documentElement.classList.add('dark')
+      setDarkMode(true)
+    } else {
+      document.documentElement.classList.remove('dark')
+      setDarkMode(false)
+    }
+  }, [])
+
+  const toggleTheme = () => {
+    if (darkMode) {
+      document.documentElement.classList.remove('dark')
+      localStorage.theme = 'light'
+      setDarkMode(false)
+    } else {
+      document.documentElement.classList.add('dark')
+      localStorage.theme = 'dark'
+      setDarkMode(true)
+    }
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -30 }}
+      transition={{ duration: 0.45, ease: 'easeOut' }}
+      className="min-h-screen bg-[#f5f8f8] dark:bg-[#102122] text-slate-900 dark:text-white font-['Space_Grotesk']"
+    >
+      <div className="flex h-screen overflow-hidden">
+      <Aside page="settings" />
+
+        <main className="flex-1 flex flex-col overflow-y-auto p-8 gap-8 custom-scrollbar">
+          <motion.div
+            initial={{ y: -30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="flex items-center gap-4 mb-8"
+          >
+          
+
+            <h1 className="text-4xl font-bold text-[#0ddff2] uppercase tracking-wider">
+              Settings
+            </h1>
+          </motion.div>
+
+          <motion.div
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="bg-slate-100 dark:bg-[#1a2e30] rounded-xl p-8 border border-slate-200 dark:border-slate-700 mx-auto w-full"
+          >
+            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+              <FaCog className="text-[#0ddff2] text-3xl" />
+              Appearance
+            </h2>
+
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-bold text-lg">Theme</h3>
+                  <p className="text-slate-500 dark:text-slate-400">
+                    Switch between light and dark mode
+                  </p>
+                </div>
+
+                <motion.button
+                  whileHover={{ scale: 1.08 }}
+                  whileTap={{ scale: 0.94 }}
+                  onClick={toggleTheme}
+                  className={`relative w-16 h-8 flex items-center rounded-full transition-colors duration-300 ${
+                    darkMode ? 'bg-[#0ddff2]' : 'bg-slate-400'
+                  }`}
+                >
+                  <motion.div
+                    className="w-7 h-7 rounded-full bg-white shadow-lg flex items-center justify-center"
+                    animate={{ x: darkMode ? '2.1rem' : '0.25rem' }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                  >
+                    {darkMode ? (
+                      <FaMoon className="text-[#102122] text-sm" />
+                    ) : (
+                      <FaSun className="text-amber-500 text-sm" />
+                    )}
+                  </motion.div>
+                </motion.button>
+              </div>
+
+             
+            </div>
+          </motion.div>
+        </main>
+
+      
+      </div>
+    </motion.div>
+  )
+}

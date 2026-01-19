@@ -1,0 +1,328 @@
+import { motion } from 'framer-motion'
+import {
+  FaPlay,
+  FaPalette,
+  FaNetworkWired,
+  FaCrown,
+  FaBolt,
+  FaChevronRight,
+  FaLock,
+  FaChartLine,
+} from 'react-icons/fa'
+import {
+  SolidPattern,
+  StripesPattern,
+  DotsPattern,
+  GlowPattern,
+} from '../game/components/PatternComponents'
+import { useState } from 'react'
+import Aside from './aside'
+
+const COLORS = ['#0ddff2', '#39ff14', '#ff00ff', '#ffff00', '#ff3131', '#ffffff']
+
+const PATTERN_COMPONENTS = {
+  solid: SolidPattern,
+  stripes: StripesPattern,
+  dots: DotsPattern,
+  glow: GlowPattern,
+}
+
+type PatternType = keyof typeof PATTERN_COMPONENTS
+
+export default function Lobby() {
+
+  const [selectedColor, setSelectedColor] = useState(COLORS[0])
+  const [selectedPattern, setSelectedPattern] = useState<PatternType>('solid')
+
+  const PatternComponent = PATTERN_COMPONENTS[selectedPattern]
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-[#f5f8f8] dark:bg-[#102122] text-slate-900 dark:text-white font-['Space_Grotesk']"
+    >
+      <div className="flex h-screen overflow-hidden">
+      <Aside page="lobby" />
+
+        <main className="flex-1 flex flex-col overflow-y-auto p-8 gap-8 custom-scrollbar">
+          <motion.header
+            initial={{ y: -40, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.7 }}
+            className="flex flex-col items-center text-center"
+          >
+            <h1 className="text-[42px] font-bold leading-tight pb-2 pt-4 uppercase italic tracking-tight">
+              Neon <span className="text-[#0ddff2]">Slither</span> Arena
+            </h1>
+            <p className="text-slate-400 max-w-lg">
+              Enter the grid, consume light, and become the longest serpent in the digital void.
+            </p>
+          </motion.header>
+
+          <motion.section
+            initial={{ y: 40, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.7 }}
+            className="flex flex-col items-center justify-center py-4"
+          >
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-[#0ddff2] rounded-full blur opacity-25 group-hover:opacity-60 transition duration-1000" />
+              <motion.button
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.96 }}
+                className="relative flex min-w-[280px] items-center justify-center overflow-hidden rounded-full h-16 px-10 bg-[#0ddff2] text-[#102122] gap-3 text-xl font-bold shadow-xl shadow-[#0ddff2]/40"
+              >
+                <FaPlay className="text-2xl" />
+                START QUICK MATCH
+              </motion.button>
+            </div>
+
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="mt-6 flex gap-6"
+            >
+              <div className="flex items-center gap-2 text-[#39ff14] font-medium">
+                <span className="size-2 rounded-full bg-[#39ff14] animate-pulse" />
+                <span>12,482 Players Online</span>
+              </div>
+              <div className="flex items-center gap-2 text-[#0ddff2] font-medium">
+                <FaBolt className="text-sm" />
+                <span>Ping: 24ms</span>
+              </div>
+            </motion.div>
+          </motion.section>
+
+          <motion.div
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+            className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+          >
+            <div className="bg-slate-100 dark:bg-[#1a2e30] rounded-xl p-6 border border-slate-200 dark:border-slate-800">
+              <motion.h3
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="text-white text-[22px] font-bold pb-4 flex items-center gap-2"
+              >
+                <FaPalette className="text-[#0ddff2]" />
+                Customize Your Snake
+              </motion.h3>
+
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                whileHover={{ scale: 1.01 }}
+                className="w-full h-40 bg-[#102122] rounded-xl mb-6 relative overflow-hidden border border-slate-700 flex items-center justify-center"
+              >
+                <div
+                  className="absolute inset-0 opacity-10"
+                  style={{
+                    backgroundImage: 'radial-gradient(#0ddff2 0.5px, transparent 0.5px)',
+                    backgroundSize: '20px 20px',
+                  }}
+                />
+                <div className="flex gap-1 items-center">
+                  {[64, 56, 48, 40, 32].map((size, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: i * 0.1 }}
+                    >
+                      <PatternComponent color={selectedColor} size={size} />
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+
+              <div className="space-y-6">
+                <div>
+                  <p className="text-xs uppercase font-bold text-slate-500 mb-3 tracking-widest">
+                    Base Skin Color
+                  </p>
+                  <div className="flex flex-wrap gap-4">
+                    {COLORS.map((color) => (
+                      <motion.label
+                        key={color}
+                        whileHover={{ scale: 1.15 }}
+                        whileTap={{ scale: 0.92 }}
+                        className={`size-8 rounded-full border border-slate-500 cursor-pointer transition-all ${
+                          selectedColor === color ? 'ring-4 ring-offset-2 ring-offset-slate-900 ring-white' : ''
+                        }`}
+                        style={{ backgroundColor: color }}
+                      >
+                        <input
+                          type="radio"
+                          name="snake-color"
+                          className="hidden"
+                          checked={selectedColor === color}
+                          onChange={() => setSelectedColor(color)}
+                        />
+                      </motion.label>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-xs uppercase font-bold text-slate-500 mb-3 tracking-widest">
+                    Pattern
+                  </p>
+                  <div className="flex gap-3 flex-wrap">
+                    {(['solid', 'stripes', 'dots', 'glow'] as const).map((pattern) => (
+                      <motion.button
+                        key={pattern}
+                        whileHover={{ scale: 1.08 }}
+                        whileTap={{ scale: 0.96 }}
+                        onClick={() => setSelectedPattern(pattern)}
+                        className={`px-4 py-2 rounded-lg text-xs font-bold uppercase transition-colors ${
+                          selectedPattern === pattern
+                            ? 'bg-[#102122] border-2 border-[#0ddff2] text-[#0ddff2] shadow-lg shadow-[#0ddff2]/30'
+                            : 'bg-[#1a2e30] border border-slate-700 text-slate-400 hover:border-slate-500 hover:text-slate-300'
+                        }`}
+                      >
+                        {pattern.charAt(0).toUpperCase() + pattern.slice(1)}
+                      </motion.button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-slate-100 dark:bg-[#1a2e30] rounded-xl p-6 border border-slate-200 dark:border-slate-800 flex flex-col">
+              <motion.div
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="flex justify-between items-center mb-4"
+              >
+                <h3 className="text-white text-[22px] font-bold flex items-center gap-2">
+                  <FaNetworkWired className="text-[#0ddff2]" />
+                  Active Game Rooms
+                </h3>
+                <span className="text-xs text-[#0ddff2] font-bold px-2 py-1 bg-[#0ddff2]/10 rounded">
+                  LIVE
+                </span>
+              </motion.div>
+
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                className="space-y-3 overflow-y-auto pr-2 max-h-[350px]"
+              >
+                {[
+                  { name: 'Neon City (Global)', ping: 12, mode: 'Classic Mode', players: 45, max: 50, status: 'Almost Full', color: '#39ff14' },
+                  { name: 'The Void (Experimental)', ping: 34, mode: 'No-Wall Mode', players: 12, max: 50, status: 'Available', color: '#90c6cb' },
+                  { name: 'Europe #42', ping: 20, mode: 'Classic Mode', players: 38, max: 50, status: 'Available', color: '#90c6cb' },
+                  { name: 'Speed Run Arena', ping: 22, mode: 'Fast Food', players: 49, max: 50, status: 'Locked', color: '#ff00ff', locked: true },
+                ].map((room) => (
+                  <motion.div
+                    key={room.name}
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                    className="flex items-center justify-between p-4 rounded-xl bg-[#102122] border border-slate-700 hover:border-[#0ddff2]/50 transition-colors group cursor-pointer"
+                  >
+                    <div className="flex flex-col">
+                      <span className="font-bold text-white group-hover:text-[#0ddff2] transition-colors">
+                        {room.name}
+                      </span>
+                      <span className="text-xs text-slate-500">
+                        Ping: {room.ping}ms • {room.mode}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <span className="block text-sm font-bold text-white">
+                          {room.players}/{room.max}
+                        </span>
+                        <span
+                          className={`block text-[10px] font-bold uppercase ${
+                            room.locked
+                              ? 'text-[#ff00ff]'
+                              : room.status === 'Almost Full'
+                              ? 'text-[#39ff14]'
+                              : 'text-slate-500'
+                          }`}
+                        >
+                          {room.status}
+                        </span>
+                      </div>
+                      <span className="text-slate-500 group-hover:text-[#0ddff2]">
+                        {room.locked ? <FaLock /> : <FaChevronRight />}
+                      </span>
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+          </motion.div>
+        </main>
+
+        <motion.aside
+          initial={{ x: 80, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.7, delay: 0.4 }}
+          className="w-80 flex-shrink-0 bg-slate-100 dark:bg-[#1a2e30] border-l border-slate-200 dark:border-slate-800 flex flex-col p-6 overflow-hidden"
+        >
+          <h3 className="text-white text-xl font-bold mb-6 flex items-center gap-2 italic tracking-tight">
+            <FaCrown className="text-[#0ddff2]" />
+            TOP SERPENTS
+          </h3>
+
+          <div className="flex-1 overflow-y-auto custom-scrollbar pr-1 space-y-4">
+            {[
+              { rank: 1, name: 'ViperX_King', points: '48,290', highlight: true },
+              { rank: 2, name: 'NeonShadow', points: '42,105' },
+              { rank: 3, name: 'GlowMamba', points: '39,400' },
+              { rank: 4, name: 'ShadowPixel', points: '31,002', faded: true },
+              { rank: 5, name: 'GlitchSlayer', points: '28,500', faded: true },
+            ].map((entry) => (
+              <motion.div
+                key={entry.rank}
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: entry.rank * 0.08 }}
+                whileHover={{ scale: 1.02, y: -2 }}
+                className={`relative p-4 rounded-xl flex items-center gap-4 ${
+                  entry.highlight
+                    ? 'bg-[#0ddff2]/10 border border-[#0ddff2]/30 shadow-lg shadow-[#0ddff2]/20'
+                    : entry.faded
+                    ? 'bg-[#102122]/50 border border-slate-800 opacity-70'
+                    : 'bg-[#102122] border border-slate-700'
+                }`}
+              >
+                <div
+                  className={`${entry.highlight ? 'text-[#0ddff2]' : 'text-slate-400'} font-black text-2xl w-6`}
+                >
+                  {entry.rank}
+                </div>
+                <div
+                  className={`size-10 rounded-full bg-cover bg-center border-2 ${
+                    entry.highlight ? 'border-[#0ddff2]' : 'border-slate-600'
+                  }`}
+                  style={{
+                    backgroundImage: 'url("https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80")',
+                  }}
+                />
+                <div className="flex flex-col flex-1 overflow-hidden">
+                  <span className="text-sm font-bold truncate">{entry.name}</span>
+                  <span className={`text-xs ${entry.highlight ? 'text-[#0ddff2]' : 'text-slate-400'}`}>
+                    {entry.points} Points
+                  </span>
+                </div>
+                {entry.highlight && <FaChartLine className="text-[#39ff14] text-sm" />}
+              </motion.div>
+            ))}
+          </div>
+        </motion.aside>
+      </div>
+    </motion.div>
+  )
+}
