@@ -12,7 +12,7 @@ interface PageContextType {
 const PageContext = createContext<PageContextType | undefined>(undefined)
 
 export function PageProvider({ children }: { children: ReactNode }) {
-  const [currentPage, setCurrentPage] = useState<Page>('lobby')
+  const [currentPage, setCurrentPage] = useState<Page>('play')
 
   return (
     <PageContext.Provider value={{ currentPage, setCurrentPage }}>
