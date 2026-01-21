@@ -1,0 +1,53 @@
+import { motion } from "framer-motion";
+import { FaInfoCircle, FaAppleAlt, FaBolt, FaSkull } from "react-icons/fa";
+
+const GameLobby: React.FC = () => {
+  const tips = [
+    { icon: <FaAppleAlt />, title: "Eat Food", description: "Collect apples to grow and gain points." },
+    { icon: <FaBolt />, title: "Boost", description: "Hold SPACE to speed up, but watch your stamina!" },
+    { icon: <FaSkull />, title: "Avoid Death", description: "Don't hit walls or other snakes." },
+  ];
+
+  return (
+    <motion.aside
+      initial={{ x: -80, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.7 }}
+      className="w-80 flex-shrink-0 bg-[#102122]/90 backdrop-blur-md border-r border-[#224649] flex flex-col p-6 rounded-2xl shadow-lg overflow-hidden"
+    >
+      <h3 className="text-white text-2xl font-bold mb-6 flex items-center gap-2 tracking-tight uppercase">
+        <FaInfoCircle className="text-[#0ddff2]" /> Game Lobby
+      </h3>
+
+      <p className="text-slate-300 mb-6 text-sm leading-snug">
+        Welcome to <span className="text-[#0ddff2] font-semibold">Snake Arena v2.0</span>! Learn the basics and get ready to dominate the grid.
+      </p>
+
+      <div className="flex flex-col gap-4">
+        {tips.map((tip, idx) => (
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: idx * 0.1 }}
+            className="flex items-center gap-4 p-3 rounded-xl bg-[#183234]/80 border border-[#316368] hover:bg-[#0ddff2]/10 transition"
+          >
+            <div className="text-[#0ddff2] text-lg">{tip.icon}</div>
+            <div className="flex flex-col">
+              <span className="text-white font-bold text-sm">{tip.title}</span>
+              <span className="text-slate-400 text-xs">{tip.description}</span>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="mt-auto pt-6 border-t border-[#224649]">
+        <p className="text-slate-400 text-xs">
+          Tip: Watch other players and predict their moves. Boost strategically!
+        </p>
+      </div>
+    </motion.aside>
+  );
+};
+
+export default GameLobby;

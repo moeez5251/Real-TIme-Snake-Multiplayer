@@ -5,7 +5,6 @@ import Settings from './components/Settings'
 import { usePage } from './context/PageContext'
 import { AnimatePresence } from 'framer-motion'
 import Canvas from './game/Canvas'
-
 function AppContent() {
   const { currentPage } = usePage()
 

@@ -14,10 +14,11 @@ import {
   StripesPattern,
   DotsPattern,
   GlowPattern,
-} from '../game/components/PatternComponents'
+} from './solidpatterns'
 import { useState } from 'react'
 import Aside from './aside'
-
+import GameLobby from './lobbyaside'
+import { useSocket } from '../game/hooks/useSocket'
 const COLORS = ['#0ddff2', '#39ff14', '#ff00ff', '#ffff00', '#ff3131', '#ffffff']
 
 const PATTERN_COMPONENTS = {
@@ -35,7 +36,7 @@ export default function Lobby() {
   const [selectedPattern, setSelectedPattern] = useState<PatternType>('solid')
 
   const PatternComponent = PATTERN_COMPONENTS[selectedPattern]
-
+  const { ping } = useSocket()
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -45,7 +46,7 @@ export default function Lobby() {
       className="min-h-screen bg-[#f5f8f8] dark:bg-[#102122] text-slate-900 dark:text-white font-['Space_Grotesk']"
     >
       <div className="flex h-screen overflow-hidden">
-      <Aside page="lobby" />
+        <Aside page="lobby" />
 
         <main className="flex-1 flex flex-col overflow-y-auto p-8 gap-8 custom-scrollbar">
           <motion.header
@@ -90,10 +91,21 @@ export default function Lobby() {
                 <span className="size-2 rounded-full bg-[#39ff14] animate-pulse" />
                 <span>12,482 Players Online</span>
               </div>
-              <div className="flex items-center gap-2 text-[#0ddff2] font-medium">
+              <div className="flex items-center gap-2 font-medium">
                 <FaBolt className="text-sm" />
-                <span>Ping: 24ms</span>
+
+                <span
+                  className={`${ping < 50
+                      ? "text-green-400"
+                      : ping < 120
+                        ? "text-yellow-400"
+                        : "text-red-500"
+                    }`}
+                >
+                  Ping: {ping} ms
+                </span>
               </div>
+
             </motion.div>
           </motion.section>
 
@@ -153,9 +165,8 @@ export default function Lobby() {
                         key={color}
                         whileHover={{ scale: 1.15 }}
                         whileTap={{ scale: 0.92 }}
-                        className={`size-8 rounded-full border border-slate-500 cursor-pointer transition-all ${
-                          selectedColor === color ? 'ring-4 ring-offset-2 ring-offset-slate-900 ring-white' : ''
-                        }`}
+                        className={`size-8 rounded-full border border-slate-500 cursor-pointer transition-all ${selectedColor === color ? 'ring-4 ring-offset-2 ring-offset-slate-900 ring-white' : ''
+                          }`}
                         style={{ backgroundColor: color }}
                       >
                         <input
@@ -181,11 +192,10 @@ export default function Lobby() {
                         whileHover={{ scale: 1.08 }}
                         whileTap={{ scale: 0.96 }}
                         onClick={() => setSelectedPattern(pattern)}
-                        className={`px-4 py-2 rounded-lg text-xs font-bold uppercase transition-colors ${
-                          selectedPattern === pattern
-                            ? 'bg-[#102122] border-2 border-[#0ddff2] text-[#0ddff2] shadow-lg shadow-[#0ddff2]/30'
-                            : 'bg-[#1a2e30] border border-slate-700 text-slate-400 hover:border-slate-500 hover:text-slate-300'
-                        }`}
+                        className={`px-4 py-2 rounded-lg text-xs font-bold uppercase transition-colors ${selectedPattern === pattern
+                          ? 'bg-[#102122] border-2 border-[#0ddff2] text-[#0ddff2] shadow-lg shadow-[#0ddff2]/30'
+                          : 'bg-[#1a2e30] border border-slate-700 text-slate-400 hover:border-slate-500 hover:text-slate-300'
+                          }`}
                       >
                         {pattern.charAt(0).toUpperCase() + pattern.slice(1)}
                       </motion.button>
@@ -243,13 +253,12 @@ export default function Lobby() {
                           {room.players}/{room.max}
                         </span>
                         <span
-                          className={`block text-[10px] font-bold uppercase ${
-                            room.locked
-                              ? 'text-[#ff00ff]'
-                              : room.status === 'Almost Full'
+                          className={`block text-[10px] font-bold uppercase ${room.locked
+                            ? 'text-[#ff00ff]'
+                            : room.status === 'Almost Full'
                               ? 'text-[#39ff14]'
                               : 'text-slate-500'
-                          }`}
+                            }`}
                         >
                           {room.status}
                         </span>
@@ -265,63 +274,7 @@ export default function Lobby() {
           </motion.div>
         </main>
 
-        <motion.aside
-          initial={{ x: 80, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.7, delay: 0.4 }}
-          className="w-80 flex-shrink-0 bg-slate-100 dark:bg-[#1a2e30] border-l border-slate-200 dark:border-slate-800 flex flex-col p-6 overflow-hidden"
-        >
-          <h3 className="text-white text-xl font-bold mb-6 flex items-center gap-2 italic tracking-tight">
-            <FaCrown className="text-[#0ddff2]" />
-            TOP SERPENTS
-          </h3>
-
-          <div className="flex-1 overflow-y-auto custom-scrollbar pr-1 space-y-4">
-            {[
-              { rank: 1, name: 'ViperX_King', points: '48,290', highlight: true },
-              { rank: 2, name: 'NeonShadow', points: '42,105' },
-              { rank: 3, name: 'GlowMamba', points: '39,400' },
-              { rank: 4, name: 'ShadowPixel', points: '31,002', faded: true },
-              { rank: 5, name: 'GlitchSlayer', points: '28,500', faded: true },
-            ].map((entry) => (
-              <motion.div
-                key={entry.rank}
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: entry.rank * 0.08 }}
-                whileHover={{ scale: 1.02, y: -2 }}
-                className={`relative p-4 rounded-xl flex items-center gap-4 ${
-                  entry.highlight
-                    ? 'bg-[#0ddff2]/10 border border-[#0ddff2]/30 shadow-lg shadow-[#0ddff2]/20'
-                    : entry.faded
-                    ? 'bg-[#102122]/50 border border-slate-800 opacity-70'
-                    : 'bg-[#102122] border border-slate-700'
-                }`}
-              >
-                <div
-                  className={`${entry.highlight ? 'text-[#0ddff2]' : 'text-slate-400'} font-black text-2xl w-6`}
-                >
-                  {entry.rank}
-                </div>
-                <div
-                  className={`size-10 rounded-full bg-cover bg-center border-2 ${
-                    entry.highlight ? 'border-[#0ddff2]' : 'border-slate-600'
-                  }`}
-                  style={{
-                    backgroundImage: 'url("https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80")',
-                  }}
-                />
-                <div className="flex flex-col flex-1 overflow-hidden">
-                  <span className="text-sm font-bold truncate">{entry.name}</span>
-                  <span className={`text-xs ${entry.highlight ? 'text-[#0ddff2]' : 'text-slate-400'}`}>
-                    {entry.points} Points
-                  </span>
-                </div>
-                {entry.highlight && <FaChartLine className="text-[#39ff14] text-sm" />}
-              </motion.div>
-            ))}
-          </div>
-        </motion.aside>
+        <GameLobby />
       </div>
     </motion.div>
   )
