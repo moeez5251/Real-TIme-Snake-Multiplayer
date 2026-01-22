@@ -2,13 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 export const useSocket = () => {
   const socketRef = useRef<Socket | null>(null);
-  const [ping, setPing] = useState<number>(999);
+  const [ping, setPing] = useState<number>(0);
   useEffect(() => {
     const socket = io(import.meta.env.VITE_SERVER_URL || "http://localhost:3000", { transports: ["websocket"] });
     socketRef.current = socket;
-
-
-
+    
     return () => {
       socket.disconnect();
     };

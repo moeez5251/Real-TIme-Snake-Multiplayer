@@ -30,7 +30,7 @@ const HUD: React.FC<HUDProps> = ({ mySnake, boosting, stamina, onRespawn, custom
 
       <p className="text-sm my-2">Length: {mySnake?.body.length || 0}</p>
       <p className="text-sm my-2">Score: {mySnake?.score || 0}</p>
-      <p className="text-sm my-2">Boost: {boosting ? "ON" : "READY"} ({stamina})</p>
+      <p className="text-sm my-2">Boost: {boosting ? "ON" : "READY"} ({stamina.toFixed(0)})</p>
       <button
         onClick={onRespawn}
         className="px-4 py-2 mt-3 bg-linear-to-r from-green-600 to-emerald-600 rounded-xl text-sm font-bold hover:scale-105 transition"

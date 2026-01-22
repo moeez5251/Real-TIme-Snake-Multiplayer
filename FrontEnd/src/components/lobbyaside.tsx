@@ -20,7 +20,7 @@ const GameLobby: React.FC = () => {
       </h3>
 
       <p className="text-slate-300 mb-6 text-sm leading-snug">
-        Welcome to <span className="text-[#0ddff2] font-semibold">Snake Arena v2.0</span>! Learn the basics and get ready to dominate the grid.
+        Welcome to <span className="text-[#0ddff2] font-semibold">Snake Arena </span>! Learn the basics and get ready to dominate the grid.
       </p>
 
       <div className="flex flex-col gap-4">

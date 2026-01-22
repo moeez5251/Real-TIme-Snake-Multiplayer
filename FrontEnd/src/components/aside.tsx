@@ -26,7 +26,7 @@ const Aside = ({page}: {page: string}) => {
               <GiSnake className="text-[#102122] text-3xl" />
             </motion.div>
             <div>
-              <h2 className="text-xl font-bold tracking-tight text-[#0ddff2]">SLITHER.IO</h2>
+              <h2 className="text-xl font-bold tracking-tight text-[#0ddff2]">SLITHER.UP</h2>
               <p className="text-xs text-slate-500 dark:text-[#90c6cb] uppercase tracking-widest font-bold">
                 Multiplayer
               </p>

@@ -1,13 +1,10 @@
 // src/components/Settings.tsx
 import { motion } from 'framer-motion'
-import { FaCog, FaMoon, FaSun, FaHome, FaCrown, FaStore, FaSignOutAlt, FaChevronLeft } from 'react-icons/fa'
-import { GiSnake } from 'react-icons/gi'
-import { usePage } from '../context/PageContext'
+import { FaCog, FaVolumeMute, FaVolumeUp } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
 import Aside from './aside'
 
 export default function Settings() {
-  const { setCurrentPage } = usePage()
   const [darkMode, setDarkMode] = useState(true)
 
   // Sync with system preference on first load + handle changes
@@ -71,15 +68,15 @@ export default function Settings() {
           >
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
               <FaCog className="text-[#0ddff2] text-3xl" />
-              Appearance
+              General
             </h2>
 
             <div className="space-y-6">
-              <div className="flex items-center justify-between">
+              <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="font-bold text-lg">Theme</h3>
-                  <p className="text-slate-500 dark:text-slate-400">
-                    Switch between light and dark mode
+                  <h3 className="font-bold text-lg">Sound</h3>
+                  <p className="text-slate-500 my-2 dark:text-slate-400">
+                  Mute or unmute the game music
                   </p>
                 </div>
 
@@ -97,9 +94,9 @@ export default function Settings() {
                     transition={{ type: 'spring', stiffness: 300, damping: 25 }}
                   >
                     {darkMode ? (
-                      <FaMoon className="text-[#102122] text-sm" />
+                      <FaVolumeUp className="text-[#102122] text-sm" />
                     ) : (
-                      <FaSun className="text-amber-500 text-sm" />
+                      <FaVolumeMute className="text-[#102122] text-sm" />
                     )}
                   </motion.div>
                 </motion.button>

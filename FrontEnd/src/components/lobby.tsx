@@ -3,11 +3,7 @@ import {
   FaPlay,
   FaPalette,
   FaNetworkWired,
-  FaCrown,
   FaBolt,
-  FaChevronRight,
-  FaLock,
-  FaChartLine,
 } from 'react-icons/fa'
 import {
   SolidPattern,
@@ -15,28 +11,68 @@ import {
   DotsPattern,
   GlowPattern,
 } from './solidpatterns'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Aside from './aside'
 import GameLobby from './lobbyaside'
 import { useSocket } from '../game/hooks/useSocket'
-const COLORS = ['#0ddff2', '#39ff14', '#ff00ff', '#ffff00', '#ff3131', '#ffffff']
+import ActiveRooms from './activerooms'
+import { socket } from '../game/hooks/socket'
+import { useNavigate } from "react-router";
 
+const COLORS = ['#0ddff2', '#39ff14', '#ff00ff', '#ffff00', '#ff3131', '#ffffff']
 const PATTERN_COMPONENTS = {
-  solid: SolidPattern,
-  stripes: StripesPattern,
-  dots: DotsPattern,
-  glow: GlowPattern,
+  Solid: SolidPattern,
+  Stripes: StripesPattern,
+  Dots: DotsPattern,
+  Glow: GlowPattern,
 }
 
 type PatternType = keyof typeof PATTERN_COMPONENTS
 
 export default function Lobby() {
+  const navigate = useNavigate()
+  const storedSkin = typeof window !== 'undefined'
+    ? JSON.parse(localStorage.getItem('equippedSkin') || '{}')
+    : {}
 
-  const [selectedColor, setSelectedColor] = useState(COLORS[0])
-  const [selectedPattern, setSelectedPattern] = useState<PatternType>('solid')
-
+  const [selectedColor, setSelectedColor] = useState<string>(storedSkin.color || COLORS[0])
+  const [selectedPattern, setSelectedPattern] = useState<PatternType>(storedSkin.pattern || 'Solid')
+  const [allplayers, setallplayers] = useState([])
   const PatternComponent = PATTERN_COMPONENTS[selectedPattern]
   const { ping } = useSocket()
+  const handlejoinroom = () => {
+    socket.emit("createRoom", () => { })
+    socket.on("room-created", (data) => {
+      navigate(`/room/${data.id}`)
+    })
+  }
+  useEffect(() => {
+    socket.on("players-updated", (players) => {
+      setallplayers(players)
+    })
+    return () => {
+
+    }
+  }, [])
+  useEffect(() => {
+    localStorage.setItem("equippedSkin", JSON.stringify({
+      color: selectedColor,
+      pattern: selectedPattern
+    }))
+
+    return () => {
+
+    }
+  }, [selectedColor, selectedPattern])
+  useEffect(() => {
+    const equippedSkin = JSON.parse(localStorage.getItem("equippedSkin") || '{}')
+    setSelectedColor(equippedSkin.color)
+    setSelectedPattern(equippedSkin.pattern)
+    return () => {
+
+    }
+  }, [])
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -56,7 +92,7 @@ export default function Lobby() {
             className="flex flex-col items-center text-center"
           >
             <h1 className="text-[42px] font-bold leading-tight pb-2 pt-4 uppercase italic tracking-tight">
-              Neon <span className="text-[#0ddff2]">Slither</span> Arena
+              Neon <span className="text-[#0ddff2]">Slither</span> UP
             </h1>
             <p className="text-slate-400 max-w-lg">
               Enter the grid, consume light, and become the longest serpent in the digital void.
@@ -72,12 +108,13 @@ export default function Lobby() {
             <div className="relative group">
               <div className="absolute -inset-1 bg-[#0ddff2] rounded-full blur opacity-25 group-hover:opacity-60 transition duration-1000" />
               <motion.button
-                whileHover={{ scale: 1.08 }}
+                whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.96 }}
-                className="relative flex min-w-[280px] items-center justify-center overflow-hidden rounded-full h-16 px-10 bg-[#0ddff2] text-[#102122] gap-3 text-xl font-bold shadow-xl shadow-[#0ddff2]/40"
+                onClick={handlejoinroom}
+                className="relative flex min-w-70 items-center justify-center overflow-hidden rounded-full h-16 px-10 bg-[#0ddff2] text-[#102122] gap-3 text-xl font-bold shadow-lg shadow-[#0ddff2]/40"
               >
                 <FaPlay className="text-2xl" />
-                START QUICK MATCH
+                START NEW MATCH
               </motion.button>
             </div>
 
@@ -89,17 +126,17 @@ export default function Lobby() {
             >
               <div className="flex items-center gap-2 text-[#39ff14] font-medium">
                 <span className="size-2 rounded-full bg-[#39ff14] animate-pulse" />
-                <span>12,482 Players Online</span>
+                <span>{allplayers.length} Players Online</span>
               </div>
               <div className="flex items-center gap-2 font-medium">
                 <FaBolt className="text-sm" />
 
                 <span
                   className={`${ping < 50
-                      ? "text-green-400"
-                      : ping < 120
-                        ? "text-yellow-400"
-                        : "text-red-500"
+                    ? "text-green-400"
+                    : ping < 120
+                      ? "text-yellow-400"
+                      : "text-red-500"
                     }`}
                 >
                   Ping: {ping} ms
@@ -186,10 +223,10 @@ export default function Lobby() {
                     Pattern
                   </p>
                   <div className="flex gap-3 flex-wrap">
-                    {(['solid', 'stripes', 'dots', 'glow'] as const).map((pattern) => (
+                    {(['Solid', 'Stripes', 'Dots', 'Glow'] as const).map((pattern) => (
                       <motion.button
                         key={pattern}
-                        whileHover={{ scale: 1.08 }}
+                        whileHover={{ scale: 1.01 }}
                         whileTap={{ scale: 0.96 }}
                         onClick={() => setSelectedPattern(pattern)}
                         className={`px-4 py-2 rounded-lg text-xs font-bold uppercase transition-colors ${selectedPattern === pattern
@@ -220,56 +257,8 @@ export default function Lobby() {
                   LIVE
                 </span>
               </motion.div>
+              <ActiveRooms />
 
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.6 }}
-                className="space-y-3 overflow-y-auto pr-2 max-h-[350px]"
-              >
-                {[
-                  { name: 'Neon City (Global)', ping: 12, mode: 'Classic Mode', players: 45, max: 50, status: 'Almost Full', color: '#39ff14' },
-                  { name: 'The Void (Experimental)', ping: 34, mode: 'No-Wall Mode', players: 12, max: 50, status: 'Available', color: '#90c6cb' },
-                  { name: 'Europe #42', ping: 20, mode: 'Classic Mode', players: 38, max: 50, status: 'Available', color: '#90c6cb' },
-                  { name: 'Speed Run Arena', ping: 22, mode: 'Fast Food', players: 49, max: 50, status: 'Locked', color: '#ff00ff', locked: true },
-                ].map((room) => (
-                  <motion.div
-                    key={room.name}
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-                    className="flex items-center justify-between p-4 rounded-xl bg-[#102122] border border-slate-700 hover:border-[#0ddff2]/50 transition-colors group cursor-pointer"
-                  >
-                    <div className="flex flex-col">
-                      <span className="font-bold text-white group-hover:text-[#0ddff2] transition-colors">
-                        {room.name}
-                      </span>
-                      <span className="text-xs text-slate-500">
-                        Ping: {room.ping}ms • {room.mode}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="text-right">
-                        <span className="block text-sm font-bold text-white">
-                          {room.players}/{room.max}
-                        </span>
-                        <span
-                          className={`block text-[10px] font-bold uppercase ${room.locked
-                            ? 'text-[#ff00ff]'
-                            : room.status === 'Almost Full'
-                              ? 'text-[#39ff14]'
-                              : 'text-slate-500'
-                            }`}
-                        >
-                          {room.status}
-                        </span>
-                      </div>
-                      <span className="text-slate-500 group-hover:text-[#0ddff2]">
-                        {room.locked ? <FaLock /> : <FaChevronRight />}
-                      </span>
-                    </div>
-                  </motion.div>
-                ))}
-              </motion.div>
             </div>
           </motion.div>
         </main>

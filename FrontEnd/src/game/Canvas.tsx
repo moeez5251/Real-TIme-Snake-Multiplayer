@@ -7,20 +7,23 @@ import Alerts from "./components/Alerts";
 import Navbar from "./components/navbar";
 import Popup from "./components/popup";
 import { SolidPattern, StripesPattern, DotsPattern, GlowPattern } from "./components/PatternComponents";
-
-const ROOM_ID = "room1";
-
+import { useParams } from "react-router";
+import { useNavigate } from "react-router";
 const Canvas: React.FC = () => {
+  let params = useParams();
+  let navigate = useNavigate();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const socketRef = useRef<Socket | null>(null);
   const animationRef = useRef<number | null>(null);
   const myIdRef = useRef<string | null>(null);
   const deadRef = useRef(false);
   const staminaRef = useRef<number>(100);
-
-  const DEFAULT_SKIN: SnakeSkin = { head: "#ff4a4a", body: "#00f2ff", pattern:"Solid" };
+  const ROOM_ID = useRef("")
+  const storedSkin = typeof window !== 'undefined'
+    ? JSON.parse(localStorage.getItem('equippedSkin') || '{}')
+    : {}
+  const DEFAULT_SKIN: SnakeSkin = { head: storedSkin.color || "#00f2ff", body: storedSkin.color || "#00f2ff", pattern: storedSkin.pattern || "Solid" };
   const [customSkin, setCustomSkin] = useState<SnakeSkin>(DEFAULT_SKIN);
-
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [mySnake, setMySnake] = useState<Snake | null>(null);
   const [gridSize, setGridSize] = useState(28);
@@ -31,25 +34,22 @@ const Canvas: React.FC = () => {
 
   const directionRef = useRef<Direction>("RIGHT");
 
-  // ── Alerts ──────────────────────────────────────────────
   const addAlert = (msg: string) => {
     setAlerts(prev => [...prev, msg]);
     setTimeout(() => setAlerts(prev => prev.slice(1)), 4000);
   };
 
-  // ── Socket Setup ───────────────────────────────────────
   useEffect(() => {
     const socket = io(import.meta.env.VITE_SERVER_URL || "http://localhost:3000", {
       transports: ["websocket"],
       reconnection: true,
     });
     socketRef.current = socket;
-
     socket.on("connect", () => {
-      socket.emit("joinRoom", { rId: ROOM_ID, name: "Moeez", skin: customSkin });
+      socket.emit("joinRoom", { roomId: ROOM_ID.current, name: localStorage.getItem("username") || "Anonymous", skin: customSkin });
       addAlert("Connected ✅");
     });
-
+    socket.on("error", () => { navigate("/lobby") })
     socket.on("disconnect", () => addAlert("Disconnected ❌ Reconnecting..."));
 
     socket.on("init", (data: GameState) => {
@@ -96,7 +96,6 @@ const Canvas: React.FC = () => {
     };
   }, [customSkin]);
 
-  // ── Keyboard Controls ─────────────────────────────────
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!mySnake || mySnake.dead || gameOver) return;
@@ -141,7 +140,6 @@ const Canvas: React.FC = () => {
     };
   }, [boosting, mySnake, gameOver]);
 
-  // ── Stamina Prediction ────────────────────────────────
   useEffect(() => {
     if (!boosting) return;
     const interval = setInterval(() => {
@@ -154,7 +152,6 @@ const Canvas: React.FC = () => {
     return () => clearInterval(interval);
   }, [boosting]);
 
-  // ── Responsive Grid ─────────────────────────────────
   const updateGrid = useCallback(() => {
     const c = canvasRef.current;
     if (!c) return;
@@ -176,7 +173,6 @@ const Canvas: React.FC = () => {
     return () => window.removeEventListener("resize", updateGrid);
   }, [updateGrid]);
 
-  // ── Pattern Drawing ─────────────────────────────────
   const drawSnakeCell = (
     ctx: CanvasRenderingContext2D,
     x: number,
@@ -188,15 +184,14 @@ const Canvas: React.FC = () => {
     boosting: boolean
   ) => {
     switch (pattern) {
-      case "Solid": SolidPattern({ctx, x, y, cell, skin, isHead, boosting}); break;
-      case "Stripes": StripesPattern({ctx, x, y, cell, skin, isHead, boosting}); break;
-      case "Dots": DotsPattern({ctx, x, y, cell, skin, isHead, boosting}); break;
-      case "Glow": GlowPattern({ctx, x, y, cell, skin, isHead, boosting}); break;
-      default: SolidPattern({ctx, x, y, cell, skin, isHead, boosting});
+      case "Solid": SolidPattern({ ctx, x, y, cell, skin, isHead, boosting }); break;
+      case "Stripes": StripesPattern({ ctx, x, y, cell, skin, isHead, boosting }); break;
+      case "Dots": DotsPattern({ ctx, x, y, cell, skin, isHead, boosting }); break;
+      case "Glow": GlowPattern({ ctx, x, y, cell, skin, isHead, boosting }); break;
+      default: SolidPattern({ ctx, x, y, cell, skin, isHead, boosting });
     }
   };
 
-  // ── Canvas Draw ─────────────────────────────────────
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -217,7 +212,6 @@ const Canvas: React.FC = () => {
       const ox = (canvas.width - gameW) / 2;
       const oy = (canvas.height - gameH) / 2;
 
-      // Grid
       ctx.strokeStyle = "rgba(13,223,242,0.07)";
       for (let x = 0; x <= gameState.width; x++) {
         ctx.beginPath();
@@ -232,7 +226,6 @@ const Canvas: React.FC = () => {
         ctx.stroke();
       }
 
-      // Food
       if (gameState.food) {
         const fx = ox + gameState.food.x * cell + cell / 2;
         const fy = oy + gameState.food.y * cell + cell / 2;
@@ -245,7 +238,6 @@ const Canvas: React.FC = () => {
         ctx.shadowBlur = 0;
       }
 
-      // Snakes
       gameState.snakes.forEach(snake => {
         if (snake.dead || !snake.body?.length) return;
         ctx.save();
@@ -260,7 +252,6 @@ const Canvas: React.FC = () => {
 
         ctx.restore();
 
-        // Draw name
         if (snake.body[0]) {
           const hx = ox + snake.body[0].x * cell + cell / 2;
           const hy = oy + snake.body[0].y * cell - cell * 0.7;
@@ -282,6 +273,14 @@ const Canvas: React.FC = () => {
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
   }, [gameState, gridSize]);
+  useEffect(() => {
+    ROOM_ID.current = params.id || "";
+    return () => {
+
+    }
+  }, [params])
+
+
 
   const handleRespawn = () => {
     socketRef.current?.emit("respawn");
@@ -311,12 +310,22 @@ const Canvas: React.FC = () => {
           <p className="text-3xl mb-10">
             Score: {mySnake.score ?? 0} • Length: {mySnake.body?.length ?? 0}
           </p>
-          <button
-            onClick={handleRespawn}
-            className="px-12 py-5 bg-linear-to-r from-green-600 to-emerald-600 rounded-xl text-2xl font-bold hover:scale-105 transition shadow-lg"
-          >
-            Respawn
-          </button>
+          <div className="flex items-center gap-4">
+
+            <button
+              onClick={handleRespawn}
+              className="px-12 py-5 bg-linear-to-r from-green-600 to-emerald-600 rounded-xl text-2xl font-bold hover:scale-105 transition shadow-lg"
+            >
+              Respawn
+            </button>
+            <button
+              onClick={()=> navigate("/lobby")}
+              className="px-12 py-5 bg-linear-to-r from-cyan-600 to-blue-600 rounded-xl text-2xl font-bold hover:scale-105 transition shadow-lg"
+            >
+              Back to Lobby
+            </button>
+          </div>
+
         </div>
       )}
     </div>

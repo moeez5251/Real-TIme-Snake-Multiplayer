@@ -8,67 +8,208 @@ interface DrawPatternProps {
   skin: SnakeSkin;
   isHead: boolean;
   boosting: boolean;
+  dir?: "UP" | "DOWN" | "LEFT" | "RIGHT";
+  index?: number;
+  length?: number;
 }
 
-export const SolidPattern = ({ ctx, x, y, cell, skin, isHead, boosting }: DrawPatternProps) => {
-  ctx.fillStyle = isHead ? skin.head : skin.body;
-  ctx.shadowColor = boosting ? "#0ff" : "#0ddff2";
-  ctx.shadowBlur = boosting ? 30 : 12;
+/* ───────────────── CORE HELPERS ───────────────── */
+
+const drawEyes = (
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  cell: number,
+  dir: DrawPatternProps["dir"]
+) => {
+  const offset = cell * 0.18;
+  let ex1 = x + cell * 0.3;
+  let ex2 = x + cell * 0.7;
+  let ey = y + cell * 0.35;
+
+  if (dir === "UP") ey -= offset;
+  if (dir === "DOWN") ey += offset;
+  if (dir === "LEFT") {
+    ex1 -= offset;
+    ex2 -= offset;
+  }
+  if (dir === "RIGHT") {
+    ex1 += offset;
+    ex2 += offset;
+  }
+
+  // white eyes
+  ctx.fillStyle = "#fff";
   ctx.beginPath();
-  ctx.roundRect(x, y, cell, cell, cell * 0.3);
+  ctx.arc(ex1, ey, cell * 0.12, 0, Math.PI * 2);
+  ctx.arc(ex2, ey, cell * 0.12, 0, Math.PI * 2);
   ctx.fill();
+
+  // pupils
+  ctx.fillStyle = "#000";
+  ctx.beginPath();
+  ctx.arc(ex1, ey, cell * 0.05, 0, Math.PI * 2);
+  ctx.arc(ex2, ey, cell * 0.05, 0, Math.PI * 2);
+  ctx.fill();
+};
+
+const bodyScale = (index = 0, length = 10) =>
+  Math.max(0.65, 1 - index / length);
+
+/* ───────────────── SOLID (REALISTIC) ───────────────── */
+
+export const SolidPattern = ({
+  ctx,
+  x,
+  y,
+  cell,
+  skin,
+  isHead,
+  boosting,
+  dir,
+  index,
+  length,
+}: DrawPatternProps) => {
+  const scale = isHead ? 1.1 : bodyScale(index, length);
+  const size = cell * scale;
+  const ox = x + (cell - size) / 2;
+  const oy = y + (cell - size) / 2;
+
+  ctx.fillStyle = isHead ? skin.head : skin.body;
+  ctx.shadowColor = boosting ? "#0ff" : skin.body;
+  ctx.shadowBlur = boosting ? 30 : 12;
+
+  ctx.beginPath();
+  ctx.roundRect(ox, oy, size, size, size * 0.45);
+  ctx.fill();
+
+  // subtle highlight
+  ctx.fillStyle = "rgba(255,255,255,0.08)";
+  ctx.beginPath();
+  ctx.roundRect(ox + size * 0.1, oy + size * 0.1, size * 0.5, size * 0.3, size * 0.3);
+  ctx.fill();
+
+  if (isHead) drawEyes(ctx, ox, oy, size, dir);
+
   ctx.shadowBlur = 0;
 };
 
-export const StripesPattern = ({ ctx, x, y, cell, skin, isHead, boosting }: DrawPatternProps) => {
-  const baseColor = isHead ? skin.head : skin.body;
-  ctx.fillStyle = baseColor;
-  ctx.shadowColor = boosting ? "#0ff" : "#0ddff2";
-  ctx.shadowBlur = boosting ? 25 : 8;
-  ctx.fillRect(x, y, cell, cell);
+/* ───────────────── STRIPES (ORGANIC) ───────────────── */
 
-  ctx.strokeStyle = "rgba(255,255,255,0.2)";
+export const StripesPattern = ({
+  ctx,
+  x,
+  y,
+  cell,
+  skin,
+  isHead,
+  boosting,
+  dir,
+  index,
+  length,
+}: DrawPatternProps) => {
+  const scale = isHead ? 1.1 : Math.max(0.65, 1 - (index ?? 0) / (length ?? 10));
+  const size = cell * scale;
+  const ox = x + (cell - size) / 2;
+  const oy = y + (cell - size) / 2;
+
+  // Base fill
+  ctx.fillStyle = isHead ? skin.head : skin.body;
+  ctx.shadowColor = boosting ? "#0ff" : skin.body;
+  ctx.shadowBlur = boosting ? 25 : 10;
+  ctx.fillRect(ox, oy, size, size);
+
+  // 🔒 CLIP TO SEGMENT
+  ctx.save();
+  ctx.beginPath();
+  ctx.roundRect(ox, oy, size, size, size * 0.45);
+  ctx.clip();
+
+  // Stripes
+  ctx.strokeStyle = "rgba(255,255,255,0.25)";
   ctx.lineWidth = 2;
-  for (let i = -cell; i < cell * 2; i += 6) {
+
+  const stripeGap = 6;
+  for (let i = 0; i <= size * 2; i += stripeGap) {
     ctx.beginPath();
-    ctx.moveTo(x + i, y);
-    ctx.lineTo(x + i - cell, y + cell);
+    ctx.moveTo(ox + i, oy);
+    ctx.lineTo(ox + i - size, oy + size);
     ctx.stroke();
   }
+
+  ctx.restore();
+
+  if (isHead) drawEyes(ctx, ox, oy, size, dir);
+
   ctx.shadowBlur = 0;
 };
 
-export const DotsPattern = ({ ctx, x, y, cell, skin, isHead, boosting }: DrawPatternProps) => {
-  const baseColor = isHead ? skin.head : skin.body;
-  ctx.fillStyle = baseColor;
-  ctx.shadowColor = boosting ? "#0ff" : "#0ddff2";
-  ctx.shadowBlur = boosting ? 25 : 8;
-  ctx.fillRect(x, y, cell, cell);
+/* ───────────────── DOTS (SCALES) ───────────────── */
 
-  ctx.fillStyle = "rgba(255,255,255,0.3)";
-  const dotSpacing = 6;
-  const dotRadius = 1.5;
-  for (let i = 0; i < cell; i += dotSpacing) {
-    for (let j = 0; j < cell; j += dotSpacing) {
+export const DotsPattern = ({
+  ctx,
+  x,
+  y,
+  cell,
+  skin,
+  isHead,
+  boosting,
+  dir,
+  index,
+  length,
+}: DrawPatternProps) => {
+  const scale = isHead ? 1.1 : bodyScale(index, length);
+  const size = cell * scale;
+  const ox = x + (cell - size) / 2;
+  const oy = y + (cell - size) / 2;
+
+  ctx.fillStyle = isHead ? skin.head : skin.body;
+  ctx.shadowColor = boosting ? "#0ff" : skin.body;
+  ctx.shadowBlur = boosting ? 25 : 8;
+  ctx.fillRect(ox, oy, size, size);
+
+  ctx.fillStyle = "rgba(255,255,255,0.25)";
+  for (let i = 4; i < size; i += 8) {
+    for (let j = 4; j < size; j += 8) {
       ctx.beginPath();
-      ctx.arc(x + i, y + j, dotRadius, 0, Math.PI * 2);
+      ctx.arc(ox + i, oy + j, 1.6, 0, Math.PI * 2);
       ctx.fill();
     }
   }
+
+  if (isHead) drawEyes(ctx, ox, oy, size, dir);
   ctx.shadowBlur = 0;
 };
 
-export const GlowPattern = ({ ctx, x, y, cell, skin, isHead, boosting }: DrawPatternProps) => {
-  const baseColor = isHead ? skin.head : skin.body;
+/* ───────────────── GLOW (ENERGY SNAKE) ───────────────── */
 
-  ctx.fillStyle = baseColor;
-  ctx.shadowColor = baseColor;
-  ctx.shadowBlur = boosting ? 30 : 15;
-  ctx.fillRect(x, y, cell, cell);
+export const GlowPattern = ({
+  ctx,
+  x,
+  y,
+  cell,
+  skin,
+  isHead,
+  boosting,
+  dir,
+  index,
+  length,
+}: DrawPatternProps) => {
+  const scale = isHead ? 1.15 : bodyScale(index, length);
+  const size = cell * scale;
+  const ox = x + (cell - size) / 2;
+  const oy = y + (cell - size) / 2;
+
+  ctx.fillStyle = skin.body;
+  ctx.shadowColor = skin.body;
+  ctx.shadowBlur = boosting ? 35 : 18;
+  ctx.fillRect(ox, oy, size, size);
 
   ctx.beginPath();
-  ctx.arc(x + cell / 2, y + cell / 2, cell * 0.3, 0, Math.PI * 2);
+  ctx.arc(ox + size / 2, oy + size / 2, size * 0.35, 0, Math.PI * 2);
   ctx.fillStyle = "rgba(255,255,255,0.6)";
   ctx.fill();
+
+  if (isHead) drawEyes(ctx, ox, oy, size, dir);
   ctx.shadowBlur = 0;
 };
