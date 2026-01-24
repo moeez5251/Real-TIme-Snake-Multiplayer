@@ -7,9 +7,10 @@ import {
 } from 'react-icons/fa'
 import { GiSnake } from 'react-icons/gi'
 import { usePage } from '../context/PageContext'
-
+import { useSound } from '../context/sound'
 const Aside = ({page}: {page: string}) => {
   const { setCurrentPage } = usePage()
+  const { playSound } = useSound()
   return (
      <motion.aside
           initial={{ x: -80, opacity: 0 }}
@@ -37,7 +38,7 @@ const Aside = ({page}: {page: string}) => {
             <motion.button
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
-              onClick={()=>setCurrentPage("lobby")}
+              onClick={()=>{setCurrentPage("lobby"); playSound('click')}}
               className={`${page==="lobby"?"flex items-center gap-4 px-4 py-3 rounded-full bg-[#0ddff2] text-[#102122] font-bold cursor-pointer":"flex items-center gap-4 px-4 py-3 rounded-full hover:bg-slate-100 dark:hover:bg-[#1a2e30] transition-colors cursor-pointer text-slate-600 dark:text-slate-300"} `}
             >
               <FaHome />
@@ -47,7 +48,7 @@ const Aside = ({page}: {page: string}) => {
             <motion.button
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
-              onClick={() => setCurrentPage('skinstore')}
+              onClick={() => {setCurrentPage('skinstore'); playSound('click')}}
               className={`${page==="skinstore"?"flex items-center gap-4 px-4 py-3 rounded-full bg-[#0ddff2] text-[#102122] font-bold cursor-pointer":"flex items-center gap-4 px-4 py-3 rounded-full hover:bg-slate-100 dark:hover:bg-[#1a2e30] transition-colors cursor-pointer text-slate-600 dark:text-slate-300"} `}
             >
               <FaStore />
@@ -57,7 +58,7 @@ const Aside = ({page}: {page: string}) => {
             <motion.button
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
-              onClick={() => setCurrentPage('settings')}
+              onClick={() => {setCurrentPage('settings'); playSound('click')}}
               className={`${page==="settings"?"flex items-center gap-4 px-4 py-3 rounded-full bg-[#0ddff2] text-[#102122] font-bold cursor-pointer":"flex items-center gap-4 px-4 py-3 rounded-full hover:bg-slate-100 dark:hover:bg-[#1a2e30] transition-colors cursor-pointer text-slate-600 dark:text-slate-300"} `}
             >
               <FaCog />

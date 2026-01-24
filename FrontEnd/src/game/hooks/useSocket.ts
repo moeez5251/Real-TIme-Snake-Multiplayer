@@ -4,11 +4,10 @@ export const useSocket = () => {
   const socketRef = useRef<Socket | null>(null);
   const [ping, setPing] = useState<number>(0);
   useEffect(() => {
-    const socket = io(import.meta.env.VITE_SERVER_URL || "http://localhost:3000", { transports: ["websocket"] });
+    const socket = io(import.meta.env.VITE_SERVER_URL || "http://localhost:3000", { transports: ["websocket", "polling"] });
     socketRef.current = socket;
     
     return () => {
-      socket.disconnect();
     };
   }, []);
   useEffect(() => {

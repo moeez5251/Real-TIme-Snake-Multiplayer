@@ -3,38 +3,28 @@ import { motion } from 'framer-motion'
 import { FaCog, FaVolumeMute, FaVolumeUp } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
 import Aside from './aside'
-
+import { useSound } from '../context/sound'
 export default function Settings() {
-  const [darkMode, setDarkMode] = useState(true)
-
-  // Sync with system preference on first load + handle changes
+  const [allsounds, setallsounds] = useState(true)
+  const [Lobby, setLobby] = useState(false)
+  const [other, setother] = useState(false)
+  const { mute, toggleMute, stopSound, playSound } = useSound()
+  
   useEffect(() => {
-    // Check system preference
-    if (
-      localStorage.theme === 'dark' ||
-      (!('theme' in localStorage) &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches)
-    ) {
-      document.documentElement.classList.add('dark')
-      setDarkMode(true)
-    } else {
-      document.documentElement.classList.remove('dark')
-      setDarkMode(false)
+    if(mute){
+    
+      setallsounds(true)
     }
-  }, [])
-
-  const toggleTheme = () => {
-    if (darkMode) {
-      document.documentElement.classList.remove('dark')
-      localStorage.theme = 'light'
-      setDarkMode(false)
-    } else {
-      document.documentElement.classList.add('dark')
-      localStorage.theme = 'dark'
-      setDarkMode(true)
+    else{
+      setallsounds(false)
+      playSound('lobby')
     }
-  }
+    localStorage.setItem('mute', JSON.stringify(mute))
+    return () => {
 
+    }
+  }, [mute])
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -44,7 +34,7 @@ export default function Settings() {
       className="min-h-screen bg-[#f5f8f8] dark:bg-[#102122] text-slate-900 dark:text-white font-['Space_Grotesk']"
     >
       <div className="flex h-screen overflow-hidden">
-      <Aside page="settings" />
+        <Aside page="settings" />
 
         <main className="flex-1 flex flex-col overflow-y-auto p-8 gap-8 custom-scrollbar">
           <motion.div
@@ -53,7 +43,7 @@ export default function Settings() {
             transition={{ delay: 0.2 }}
             className="flex items-center gap-4 mb-8"
           >
-          
+
 
             <h1 className="text-4xl font-bold text-[#0ddff2] uppercase tracking-wider">
               Settings
@@ -76,38 +66,38 @@ export default function Settings() {
                 <div>
                   <h3 className="font-bold text-lg">Sound</h3>
                   <p className="text-slate-500 my-2 dark:text-slate-400">
-                  Mute or unmute the game music
+                    Mute or unmute the game music
                   </p>
                 </div>
 
                 <motion.button
                   whileHover={{ scale: 1.08 }}
                   whileTap={{ scale: 0.94 }}
-                  onClick={toggleTheme}
-                  className={`relative w-16 h-8 flex items-center rounded-full transition-colors duration-300 ${
-                    darkMode ? 'bg-[#0ddff2]' : 'bg-slate-400'
-                  }`}
+                  onClick={toggleMute}
+                  className={`relative w-16 h-8 flex items-center rounded-full transition-colors duration-300 ${!allsounds ? 'bg-[#0ddff2]' : 'bg-slate-400'
+                    }`}
                 >
                   <motion.div
                     className="w-7 h-7 rounded-full bg-white shadow-lg flex items-center justify-center"
-                    animate={{ x: darkMode ? '2.1rem' : '0.25rem' }}
+                    animate={{ x: !allsounds ? '2.1rem' : '0.25rem' }}
                     transition={{ type: 'spring', stiffness: 300, damping: 25 }}
                   >
-                    {darkMode ? (
-                      <FaVolumeUp className="text-[#102122] text-sm" />
-                    ) : (
+                    {allsounds ? (
                       <FaVolumeMute className="text-[#102122] text-sm" />
+                    ) : (
+                      <FaVolumeUp className="text-[#102122] text-sm" />
                     )}
                   </motion.div>
                 </motion.button>
               </div>
 
-             
+
             </div>
           </motion.div>
+         
         </main>
 
-      
+
       </div>
     </motion.div>
   )

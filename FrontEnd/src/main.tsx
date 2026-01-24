@@ -4,13 +4,16 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import './index.css'
 import App from './App.tsx'
 import Canvas from './game/Canvas'
+import { SoundProvider } from './context/sound.tsx';
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+    <SoundProvider>
     <BrowserRouter>
-       <Routes>
-      <Route path="/lobby" element={<App />} />
-      <Route path="/room/:id" element={<Canvas />} />
-    </Routes>
+      <Routes>
+        <Route path="/lobby" element={<App />} />
+        <Route path="/room/:id" element={<Canvas />} />
+      </Routes>
     </BrowserRouter>
+    </SoundProvider>
   </StrictMode>,
 )

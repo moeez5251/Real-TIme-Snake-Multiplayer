@@ -18,7 +18,8 @@ import { useSocket } from '../game/hooks/useSocket'
 import ActiveRooms from './activerooms'
 import { socket } from '../game/hooks/socket'
 import { useNavigate } from "react-router";
-
+import { GlowingEffect } from '../../components/ui/glowing-effect'
+import { useSound } from '../context/sound'
 const COLORS = ['#0ddff2', '#39ff14', '#ff00ff', '#ffff00', '#ff3131', '#ffffff']
 const PATTERN_COMPONENTS = {
   Solid: SolidPattern,
@@ -40,7 +41,9 @@ export default function Lobby() {
   const [allplayers, setallplayers] = useState([])
   const PatternComponent = PATTERN_COMPONENTS[selectedPattern]
   const { ping } = useSocket()
+  const { playSound } = useSound()
   const handlejoinroom = () => {
+    playSound("click")
     socket.emit("createRoom", () => { })
     socket.on("room-created", (data) => {
       navigate(`/room/${data.id}`)
@@ -65,11 +68,11 @@ export default function Lobby() {
     }
   }, [selectedColor, selectedPattern])
   useEffect(() => {
+    playSound("lobby")
     const equippedSkin = JSON.parse(localStorage.getItem("equippedSkin") || '{}')
     setSelectedColor(equippedSkin.color)
     setSelectedPattern(equippedSkin.pattern)
     return () => {
-
     }
   }, [])
 
@@ -152,7 +155,16 @@ export default function Lobby() {
             transition={{ delay: 0.4, duration: 0.8 }}
             className="grid grid-cols-1 lg:grid-cols-2 gap-8"
           >
-            <div className="bg-slate-100 dark:bg-[#1a2e30] rounded-xl p-6 border border-slate-200 dark:border-slate-800">
+            <div className="bg-slate-100 relative dark:bg-[#1a2e30] rounded-xl p-6 border border-slate-200 dark:border-slate-800">
+              <GlowingEffect
+                blur={0}
+                borderWidth={2}
+                spread={90}
+                glow={true}
+                disabled={false}
+                proximity={64}
+                inactiveZone={0.01}
+              />
               <motion.h3
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -211,7 +223,7 @@ export default function Lobby() {
                           name="snake-color"
                           className="hidden"
                           checked={selectedColor === color}
-                          onChange={() => setSelectedColor(color)}
+                          onChange={() => {setSelectedColor(color); playSound('click');}}
                         />
                       </motion.label>
                     ))}
@@ -228,7 +240,7 @@ export default function Lobby() {
                         key={pattern}
                         whileHover={{ scale: 1.01 }}
                         whileTap={{ scale: 0.96 }}
-                        onClick={() => setSelectedPattern(pattern)}
+                        onClick={() => {setSelectedPattern(pattern); playSound('click');}}
                         className={`px-4 py-2 rounded-lg text-xs font-bold uppercase transition-colors ${selectedPattern === pattern
                           ? 'bg-[#102122] border-2 border-[#0ddff2] text-[#0ddff2] shadow-lg shadow-[#0ddff2]/30'
                           : 'bg-[#1a2e30] border border-slate-700 text-slate-400 hover:border-slate-500 hover:text-slate-300'
@@ -242,13 +254,23 @@ export default function Lobby() {
               </div>
             </div>
 
-            <div className="bg-slate-100 dark:bg-[#1a2e30] rounded-xl p-6 border border-slate-200 dark:border-slate-800 flex flex-col">
+            <div className="bg-slate-100 relative dark:bg-[#1a2e30] rounded-xl p-6 border border-slate-200 dark:border-slate-800 flex flex-col">
+                <GlowingEffect
+                  blur={0}
+                  borderWidth={2}
+                  spread={80}
+                  glow={true}
+                  disabled={false}
+                  proximity={64}
+                  inactiveZone={0.01}
+                />
               <motion.div
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.5 }}
                 className="flex justify-between items-center mb-4"
               >
+              
                 <h3 className="text-white text-[22px] font-bold flex items-center gap-2">
                   <FaNetworkWired className="text-[#0ddff2]" />
                   Active Game Rooms

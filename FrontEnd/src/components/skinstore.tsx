@@ -2,12 +2,14 @@ import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import Aside from './aside'
 import { SKINS } from './skins'
-
+import { useSound } from '../context/sound'
 
 export default function SkinStore() {
   const [equippedSkinId, setEquippedSkinId] = useState(1)
+  const { playSound } = useSound()
 
   const handleEquip = (skinId: number) => {
+    playSound("click")
     setEquippedSkinId(skinId)
     const oldSkin = JSON.parse(localStorage.getItem('equippedSkin')||'{}')
    localStorage.setItem('equippedSkin', JSON.stringify({

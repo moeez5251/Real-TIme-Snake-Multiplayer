@@ -9,7 +9,9 @@ import Popup from "./components/popup";
 import { SolidPattern, StripesPattern, DotsPattern, GlowPattern } from "./components/PatternComponents";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router";
+import { useSound } from "../context/sound";
 const Canvas: React.FC = () => {
+  const {playSound,stopSound}=useSound()
   let params = useParams();
   let navigate = useNavigate();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -31,7 +33,6 @@ const Canvas: React.FC = () => {
   const [gameOver, setGameOver] = useState(false);
   const [alerts, setAlerts] = useState<string[]>([]);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
-
   const directionRef = useRef<Direction>("RIGHT");
 
   const addAlert = (msg: string) => {
@@ -41,7 +42,7 @@ const Canvas: React.FC = () => {
 
   useEffect(() => {
     const socket = io(import.meta.env.VITE_SERVER_URL || "http://localhost:3000", {
-      transports: ["websocket"],
+      transports: ["websocket","polling"],
       reconnection: true,
     });
     socketRef.current = socket;
@@ -279,7 +280,12 @@ const Canvas: React.FC = () => {
 
     }
   }, [params])
-
+  useEffect(() => {
+    stopSound("lobby")
+    return () => {
+      
+    }
+  },[])
 
 
   const handleRespawn = () => {
