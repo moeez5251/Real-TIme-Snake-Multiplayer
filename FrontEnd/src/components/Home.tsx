@@ -5,7 +5,9 @@ import Features from './Features'
 import Footer from './Footer'
 import { BackgroundRippleEffect } from './GridDemoBg'
 import { useSound } from '../context/sound'
+import useLenis from './lenis'
 const Home = () => {
+  useLenis(0.4)
   const {stopSound}=useSound()
   useEffect(() => {
     stopSound("lobby");

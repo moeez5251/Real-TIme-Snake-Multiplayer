@@ -1,21 +1,35 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import './index.css'
 import App from './App.tsx'
 import Canvas from './game/Canvas'
 import { SoundProvider } from './context/sound.tsx';
 import Home from './components/Home.tsx';
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <SoundProvider>
-    <BrowserRouter>
-      <Routes>
+import UserName from './components/usernameadd.tsx';
+import { AnimatePresence } from 'framer-motion';
+
+function AnimatedRoutes() {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Home />} />
+        <Route path="/verify" element={<UserName />} />
         <Route path="/lobby" element={<App />} />
         <Route path="/room/:id" element={<Canvas />} />
       </Routes>
-    </BrowserRouter>
+    </AnimatePresence>
+  );
+}
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <SoundProvider>
+      <BrowserRouter>
+        <AnimatedRoutes />
+      </BrowserRouter>
     </SoundProvider>
-  </StrictMode>,
-)
+  </StrictMode>
+);

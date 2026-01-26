@@ -17,7 +17,6 @@ io.on("connection", socket => {
 
   socket.on("pingCheck", callback => callback());
 
-  // CREATE ROOM
   socket.on("createRoom", data => {
     const roomId = uuidv4().slice(0, 6).toUpperCase();
     const maxPlayers = data?.maxPlayers || 10;
@@ -30,7 +29,6 @@ io.on("connection", socket => {
       maxPlayers
     };
 
-    // initial food
     import("./game/foodGeneration.js").then(module => {
       room.food = module.generateFood([]);
       room.interval = setInterval(() => gameTick(room, io, getSafeSnake), 1000 / TICK_RATE);
@@ -41,7 +39,6 @@ io.on("connection", socket => {
     });
   });
 
-  // JOIN ROOM
   socket.on("joinRoom", data => {
     const { roomId, name, skin } = data;
     const room = rooms[roomId];
@@ -72,7 +69,6 @@ io.on("connection", socket => {
     io.emit("rooms-updated", getActiveRooms());
   });
 
-  // CHANGE DIRECTION
   socket.on("directionChange", newDir => {
     if (!currentRoomId) return;
     const room = rooms[currentRoomId];
@@ -90,7 +86,6 @@ io.on("connection", socket => {
     snake.direction = newDir;
   });
 
-  // BOOST
   socket.on("boost", enabled => {
     if (!currentRoomId) return;
     const room = rooms[currentRoomId];
@@ -102,7 +97,6 @@ io.on("connection", socket => {
     snake.boost = enabled && snake.stamina > 0;
   });
 
-  // RESPAWN
   socket.on("respawn", () => {
     if (!currentRoomId) return;
     const room = rooms[currentRoomId];
@@ -124,12 +118,10 @@ io.on("connection", socket => {
     });
   });
 
-  // GET ACTIVE ROOMS
   socket.on("get-active-rooms", () => {
     socket.emit("active-rooms", getActiveRooms());
   });
 
-  // DISCONNECT
   socket.on("disconnect", () => {
     if (!currentRoomId) return;
     const room = rooms[currentRoomId];
@@ -152,5 +144,7 @@ io.on("connection", socket => {
     io.emit("rooms-updated", getActiveRooms());
   });
 });
-
+app.get("/", (req, res) => {
+  res.send("Multiplayer Snake Game Server is running.");
+});
 server.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
