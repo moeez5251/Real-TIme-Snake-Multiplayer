@@ -6,9 +6,7 @@ import Aside from './aside'
 import { useSound } from '../context/sound'
 export default function Settings() {
   const [allsounds, setallsounds] = useState(true)
-  const [Lobby, setLobby] = useState(false)
-  const [other, setother] = useState(false)
-  const { mute, toggleMute, stopSound, playSound } = useSound()
+  const { mute, toggleMute, playSound } = useSound()
   
   useEffect(() => {
     if(mute){

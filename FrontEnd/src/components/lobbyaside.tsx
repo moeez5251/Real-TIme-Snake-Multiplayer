@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
-import { FaInfoCircle, FaAppleAlt, FaBolt, FaSkull } from "react-icons/fa";
-
+import { FaInfoCircle, FaAppleAlt, FaBolt, FaSkull, FaQuestion } from "react-icons/fa";
+import Popup from "../game/components/popup";
+import { useState } from "react";
 const GameLobby: React.FC = () => {
+  const [howtoPlay, setHowToPlay] = useState(false);
   const tips = [
     { icon: <FaAppleAlt />, title: "Eat Food", description: "Collect apples to grow and gain points." },
     { icon: <FaBolt />, title: "Boost", description: "Hold SPACE to speed up, but watch your stamina!" },
@@ -40,12 +42,26 @@ const GameLobby: React.FC = () => {
           </motion.div>
         ))}
       </div>
-
+       <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-4 p-3 rounded-xl bg-[#183234]/80 border border-[#316368] hover:bg-[#0ddff2]/10 transition my-4"
+          >
+            <div className="text-[#0ddff2] text-lg"><FaQuestion /></div>
+            <div className="flex flex-col">
+              <span onClick={()=>setHowToPlay(true)} className="text-white font-bold text-sm hover:text-[#0ddff2] cursor-pointer">How to Play</span>
+              <span className="text-slate-400 text-xs">Read the rules and learn how to play.</span>
+            </div>
+          </motion.div>
       <div className="mt-auto pt-6 border-t border-[#224649]">
         <p className="text-slate-400 text-xs">
           Tip: Watch other players and predict their moves. Boost strategically!
         </p>
       </div>
+      {
+        howtoPlay &&
+        <Popup setShowHowToPlay={setHowToPlay} />
+      }
     </motion.aside>
   );
 };

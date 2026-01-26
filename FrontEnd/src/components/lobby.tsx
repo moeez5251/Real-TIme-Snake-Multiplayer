@@ -158,7 +158,7 @@ export default function Lobby() {
             <div className="bg-slate-100 relative dark:bg-[#1a2e30] rounded-xl p-6 border border-slate-200 dark:border-slate-800">
               <GlowingEffect
                 blur={0}
-                borderWidth={2}
+                borderWidth={3}
                 spread={90}
                 glow={true}
                 disabled={false}
@@ -257,7 +257,7 @@ export default function Lobby() {
             <div className="bg-slate-100 relative dark:bg-[#1a2e30] rounded-xl p-6 border border-slate-200 dark:border-slate-800 flex flex-col">
                 <GlowingEffect
                   blur={0}
-                  borderWidth={2}
+                  borderWidth={3}
                   spread={80}
                   glow={true}
                   disabled={false}

@@ -19,6 +19,7 @@ interface SoundProviderProps {
 }
 
 export const SoundProvider: React.FC<SoundProviderProps> = ({ children }) => {
+    
     const [mute, setMute] = useState(localStorage.getItem("mute") ? localStorage.getItem("mute") === "true" : false);
     const [volume, setVolumeState] = useState(1);
 

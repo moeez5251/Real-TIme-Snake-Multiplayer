@@ -18,6 +18,7 @@ export default function SkinStore() {
    }))
   }
   useEffect(() => {
+    playSound("lobby")
     const skin = JSON.parse(localStorage.getItem('equippedSkin')||'{}') 
     if (skin) {
       const id=SKINS.find((sk) => sk.color === skin.color)?.id

@@ -9,6 +9,29 @@
 body{
   background-color: var(--background-color);
 }
+
+.neon-glow {
+
+box-shadow: 0 0 20px rgba(13, 227, 242, 0.4);
+
+}
+@theme inline {
+  --animate-cell-ripple: cell-ripple var(--duration, 200ms) ease-out none 1
+    var(--delay, 0ms);
+
+  @keyframes cell-ripple {
+    0% {
+      opacity: 0.4;
+    }
+    50% {
+      opacity: 0.8;
+    }
+    100% {
+      opacity: 0.4;
+    }
+  }
+}
+
 .custom-scrollbar {
   scrollbar-width: thin;           /* Firefox */
   scrollbar-color: #0ddff2 #1a2e30; /* Firefox */
