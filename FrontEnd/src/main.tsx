@@ -8,6 +8,7 @@ import { SoundProvider } from './context/sound.tsx';
 import Home from './components/Home.tsx';
 import UserName from './components/usernameadd.tsx';
 import { AnimatePresence } from 'framer-motion';
+import ProtectedRoute from './src/routes/ProtectedRoute.tsx';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -17,7 +18,11 @@ function AnimatedRoutes() {
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Home />} />
         <Route path="/verify" element={<UserName />} />
-        <Route path="/lobby" element={<App />} />
+        <Route path="/lobby" element={
+          <ProtectedRoute>
+            <App />
+          </ProtectedRoute>
+        } />
         <Route path="/room/:id" element={<Canvas />} />
       </Routes>
     </AnimatePresence>

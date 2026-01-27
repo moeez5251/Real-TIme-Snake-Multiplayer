@@ -41,7 +41,7 @@ const Navbar = () => {
                 }}
 
                 transition={{ duration: 0.8, ease: "easeOut" }}
-                onClick={() => { playSound("click"); navigate("/verify") }}
+                onClick={() => { playSound("click"); localStorage.getItem("username") ? navigate("/lobby") :    navigate("/verify") }}
                 className="bg-[#0ddff2] text-[#102122] px-6 py-2.5 rounded-full text-base font-bold neon-glow hover:scale-105 transition-transform cursor-pointer"
             >
                 Join Arena

@@ -109,7 +109,7 @@ const Herosection = () => {
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0, opacity: 0 }}
                             transition={{ duration: 0.3, ease: "easeOut" }}
-                            onClick={() => { playSound("click"); navigate("/verify") }} className="bg-[#0ddff2] text-background-dark text-xl font-black px-12 py-5 rounded-full neon-glow hover:scale-105 transition-transform flex items-center gap-3 cursor-pointer">
+                            onClick={() => { playSound("click"); localStorage.getItem("username") ? navigate("/lobby") :    navigate("/verify") }} className="bg-[#0ddff2] text-background-dark text-xl font-black px-12 py-5 rounded-full neon-glow hover:scale-105 transition-transform flex items-center gap-3 cursor-pointer">
 
                             ENTER LOBBY
                             <FaArrowRight />

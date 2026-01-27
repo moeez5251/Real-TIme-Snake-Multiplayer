@@ -40,10 +40,10 @@ const HUD: React.FC<HUDProps> = ({ mySnake, boosting, stamina, onRespawn, custom
 
       <p className="text-sm mt-4 mb-2">Your Skin Preview</p>
       <div className="flex gap-2">
-        {customSkin.pattern === "solid" && <SolidPattern color={customSkin.head} size={32} />}
-        {customSkin.pattern === "stripes" && <StripesPattern color={customSkin.head} size={32} />}
-        {customSkin.pattern === "dots" && <DotsPattern color={customSkin.head} size={32} />}
-        {customSkin.pattern === "glow" && <GlowPattern color={customSkin.head} size={32} />}
+        {customSkin.pattern === "Solid" && <SolidPattern color={customSkin.head} size={32} />}
+        {customSkin.pattern === "Stripes" && <StripesPattern color={customSkin.head} size={32} />}
+        {customSkin.pattern === "Dots" && <DotsPattern color={customSkin.head} size={32} />}
+        {customSkin.pattern === "Glow" && <GlowPattern color={customSkin.head} size={32} />}
       </div>
     </div>
   );

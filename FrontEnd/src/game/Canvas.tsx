@@ -11,7 +11,9 @@ import { useParams } from "react-router";
 import { useNavigate } from "react-router";
 import { useSound } from "../context/sound";
 const Canvas: React.FC = () => {
-  const {playSound,stopSound}=useSound()
+  const lastFoodRef = useRef<{ x: number; y: number } | null>(null);
+
+  const { playSound, stopSound } = useSound()
   let params = useParams();
   let navigate = useNavigate();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -42,12 +44,12 @@ const Canvas: React.FC = () => {
 
   useEffect(() => {
     const socket = io(import.meta.env.VITE_SERVER_URL || "http://localhost:3000", {
-      transports: ["websocket","polling"],
+      transports: ["websocket", "polling"],
       reconnection: true,
     });
     socketRef.current = socket;
     socket.on("connect", () => {
-      socket.emit("joinRoom", { roomId: ROOM_ID.current, name: localStorage.getItem("username") || "Anonymous", skin: customSkin });
+      socket.emit("joinRoom", { roomId: ROOM_ID.current, name: localStorage.getItem("username") ? JSON.parse(localStorage.getItem("username")!) : "Guest", skin: customSkin });
       addAlert("Connected ✅");
     });
     socket.on("error", () => { navigate("/lobby") })
@@ -63,17 +65,36 @@ const Canvas: React.FC = () => {
       setGameOver(false);
     });
 
-    socket.on("update", (data: GameState) => {
-      const aliveSnakes = data.snakes.filter(s => !s.dead);
-      setGameState({ ...data, snakes: aliveSnakes });
 
+    socketRef.current?.on("update", (data: GameState) => {
       const myId = myIdRef.current;
       if (!myId) return;
+
       const me = data.snakes.find(s => s.id === myId) || null;
       setMySnake(me);
 
+      const aliveSnakes = data.snakes.filter(s => !s.dead);
+      setGameState({ ...data, snakes: aliveSnakes });
+
+
+      if (me && me.body?.length && data.food) {
+        const head = me.body[0];
+
+        if (
+          lastFoodRef.current &&
+          head.x === lastFoodRef.current.x &&
+          head.y === lastFoodRef.current.y
+        ) {
+          playSound("eat");
+        }
+
+        lastFoodRef.current = { x: data.food.x, y: data.food.y };
+      }
+
+
       if (me?.dead && !deadRef.current) {
         deadRef.current = true;
+        playSound("death");
         setGameOver(true);
         addAlert("You Died! Press Respawn 🔄");
       } else if (me && !me.dead) {
@@ -81,8 +102,10 @@ const Canvas: React.FC = () => {
         setGameOver(false);
       }
 
+
       if (me?.stamina !== undefined) staminaRef.current = me.stamina;
     });
+
 
     socket.on("respawnSuccess", () => {
       addAlert("Respawned ✅");
@@ -114,6 +137,7 @@ const Canvas: React.FC = () => {
         case "arrowright": newDir = "RIGHT"; break;
         case " ":
           if (!boosting && staminaRef.current > 0) {
+            playSound("boost")
             setBoosting(true);
             socketRef.current?.emit("boost", true);
           }
@@ -121,6 +145,7 @@ const Canvas: React.FC = () => {
       }
 
       if (newDir && newDir !== directionRef.current) {
+        playSound("click")
         directionRef.current = newDir;
         socketRef.current?.emit("directionChange", newDir);
       }
@@ -256,7 +281,7 @@ const Canvas: React.FC = () => {
         if (snake.body[0]) {
           const hx = ox + snake.body[0].x * cell + cell / 2;
           const hy = oy + snake.body[0].y * cell - cell * 0.7;
-          ctx.fillStyle = snake.id === myIdRef.current ? "#0ff" : "#fff";
+          ctx.fillStyle = snake.skin?.head || DEFAULT_SKIN.head;
           ctx.font = `${cell * 0.45}px Space Grotesk, sans-serif`;
           ctx.textAlign = "center";
           ctx.shadowColor = "rgba(0,0,0,0.8)";
@@ -283,12 +308,13 @@ const Canvas: React.FC = () => {
   useEffect(() => {
     stopSound("lobby")
     return () => {
-      
+
     }
-  },[])
+  }, [])
 
 
   const handleRespawn = () => {
+    playSound("click")
     socketRef.current?.emit("respawn");
     setGameOver(false);
   };
@@ -325,7 +351,7 @@ const Canvas: React.FC = () => {
               Respawn
             </button>
             <button
-              onClick={()=> navigate("/lobby")}
+              onClick={() => navigate("/lobby")}
               className="px-12 py-5 bg-linear-to-r from-cyan-600 to-blue-600 rounded-xl text-2xl font-bold hover:scale-105 transition shadow-lg"
             >
               Back to Lobby

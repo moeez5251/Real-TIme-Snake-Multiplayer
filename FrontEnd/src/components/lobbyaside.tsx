@@ -2,8 +2,10 @@ import { motion } from "framer-motion";
 import { FaInfoCircle, FaAppleAlt, FaBolt, FaSkull, FaQuestion } from "react-icons/fa";
 import Popup from "../game/components/popup";
 import { useState } from "react";
+import { useSound } from "../context/sound";
 const GameLobby: React.FC = () => {
   const [howtoPlay, setHowToPlay] = useState(false);
+  const { playSound } = useSound();
   const tips = [
     { icon: <FaAppleAlt />, title: "Eat Food", description: "Collect apples to grow and gain points." },
     { icon: <FaBolt />, title: "Boost", description: "Hold SPACE to speed up, but watch your stamina!" },
@@ -49,7 +51,7 @@ const GameLobby: React.FC = () => {
           >
             <div className="text-[#0ddff2] text-lg"><FaQuestion /></div>
             <div className="flex flex-col">
-              <span onClick={()=>setHowToPlay(true)} className="text-white font-bold text-sm hover:text-[#0ddff2] cursor-pointer">How to Play</span>
+              <span onClick={()=>{setHowToPlay(true); playSound("click")}} className="text-white font-bold text-sm hover:text-[#0ddff2] cursor-pointer">How to Play</span>
               <span className="text-slate-400 text-xs">Read the rules and learn how to play.</span>
             </div>
           </motion.div>

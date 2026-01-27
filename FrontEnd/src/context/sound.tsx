@@ -31,11 +31,10 @@ export const SoundProvider: React.FC<SoundProviderProps> = ({ children }) => {
         lobby: new Audio("/Sounds/lobby.mp3"),
     };
 
-    // Set volume & loop for lobby
     Object.entries(sounds).forEach(([name, s]) => {
         s.preload = "auto";
         s.volume = volume;
-        if (name === "lobby") s.loop = true; // loop lobby
+        if (name === "lobby") s.loop = true; 
     });
 
     const playSound = (name: SoundName) => {
@@ -43,7 +42,7 @@ export const SoundProvider: React.FC<SoundProviderProps> = ({ children }) => {
         const sound = sounds[name];
         if (!sound) return;
 
-        if (name === "lobby" && !sound.paused) return; // prevent restarting lobby
+        if (name === "lobby" && !sound.paused) return; 
 
         sound.currentTime = 0;
         sound.play().catch(() => { });

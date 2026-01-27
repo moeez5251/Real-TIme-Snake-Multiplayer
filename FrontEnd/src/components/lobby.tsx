@@ -20,6 +20,7 @@ import { socket } from '../game/hooks/socket'
 import { useNavigate } from "react-router";
 import { GlowingEffect } from '../../components/ui/glowing-effect'
 import { useSound } from '../context/sound'
+import Loader from './loader'
 const COLORS = ['#0ddff2', '#39ff14', '#ff00ff', '#ffff00', '#ff3131', '#ffffff']
 const PATTERN_COMPONENTS = {
   Solid: SolidPattern,
@@ -39,16 +40,26 @@ export default function Lobby() {
   const [selectedColor, setSelectedColor] = useState<string>(storedSkin.color || COLORS[0])
   const [selectedPattern, setSelectedPattern] = useState<PatternType>(storedSkin.pattern || 'Solid')
   const [allplayers, setallplayers] = useState([])
+  const [load, setLoad] = useState(false)
   const PatternComponent = PATTERN_COMPONENTS[selectedPattern]
   const { ping } = useSocket()
   const { playSound } = useSound()
   const handlejoinroom = () => {
     playSound("click")
+    setLoad(true)
     socket.emit("createRoom", () => { })
     socket.on("room-created", (data) => {
       navigate(`/room/${data.id}`)
     })
   }
+  useEffect(() => {
+    const username = JSON.parse(localStorage.getItem("username") || "")
+    if (!username) {
+      navigate("/")
+    }
+    return () => {
+    }
+  }, [])
   useEffect(() => {
     socket.on("players-updated", (players) => {
       setallplayers(players)
@@ -75,6 +86,7 @@ export default function Lobby() {
     return () => {
     }
   }, [])
+
 
   return (
     <motion.div
@@ -114,7 +126,7 @@ export default function Lobby() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.96 }}
                 onClick={handlejoinroom}
-                className="relative flex min-w-70 items-center justify-center overflow-hidden rounded-full h-16 px-10 bg-[#0ddff2] text-[#102122] gap-3 text-xl font-bold shadow-lg shadow-[#0ddff2]/40"
+                className="relative flex min-w-70 items-center justify-center overflow-hidden rounded-full h-16 px-10 bg-[#0ddff2] text-[#102122] gap-3 text-xl font-bold shadow-lg shadow-[#0ddff2]/40 cursor-pointer"
               >
                 <FaPlay className="text-2xl" />
                 START NEW MATCH
@@ -223,7 +235,7 @@ export default function Lobby() {
                           name="snake-color"
                           className="hidden"
                           checked={selectedColor === color}
-                          onChange={() => {setSelectedColor(color); playSound('click');}}
+                          onChange={() => { setSelectedColor(color); playSound('click'); }}
                         />
                       </motion.label>
                     ))}
@@ -240,7 +252,7 @@ export default function Lobby() {
                         key={pattern}
                         whileHover={{ scale: 1.01 }}
                         whileTap={{ scale: 0.96 }}
-                        onClick={() => {setSelectedPattern(pattern); playSound('click');}}
+                        onClick={() => { setSelectedPattern(pattern); playSound('click'); }}
                         className={`px-4 py-2 rounded-lg text-xs font-bold uppercase transition-colors ${selectedPattern === pattern
                           ? 'bg-[#102122] border-2 border-[#0ddff2] text-[#0ddff2] shadow-lg shadow-[#0ddff2]/30'
                           : 'bg-[#1a2e30] border border-slate-700 text-slate-400 hover:border-slate-500 hover:text-slate-300'
@@ -255,22 +267,22 @@ export default function Lobby() {
             </div>
 
             <div className="bg-slate-100 relative dark:bg-[#1a2e30] rounded-xl p-6 border border-slate-200 dark:border-slate-800 flex flex-col">
-                <GlowingEffect
-                  blur={0}
-                  borderWidth={3}
-                  spread={80}
-                  glow={true}
-                  disabled={false}
-                  proximity={64}
-                  inactiveZone={0.01}
-                />
+              <GlowingEffect
+                blur={0}
+                borderWidth={3}
+                spread={80}
+                glow={true}
+                disabled={false}
+                proximity={64}
+                inactiveZone={0.01}
+              />
               <motion.div
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.5 }}
                 className="flex justify-between items-center mb-4"
               >
-              
+
                 <h3 className="text-white text-[22px] font-bold flex items-center gap-2">
                   <FaNetworkWired className="text-[#0ddff2]" />
                   Active Game Rooms
@@ -287,6 +299,10 @@ export default function Lobby() {
 
         <GameLobby />
       </div>
+      {
+        load && <Loader text="Joining room..." color="#0ddff2" />
+
+      }
     </motion.div>
   )
 }
