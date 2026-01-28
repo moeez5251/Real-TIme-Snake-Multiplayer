@@ -4,14 +4,16 @@ import {
   FaPalette,
   FaNetworkWired,
   FaBolt,
+  FaInfoCircle,
 } from 'react-icons/fa'
+import { GiHamburgerMenu, GiSnake } from "react-icons/gi";
 import {
   SolidPattern,
   StripesPattern,
   DotsPattern,
   GlowPattern,
 } from './solidpatterns'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import Aside from './aside'
 import GameLobby from './lobbyaside'
 import { useSocket } from '../game/hooks/useSocket'
@@ -32,6 +34,9 @@ const PATTERN_COMPONENTS = {
 type PatternType = keyof typeof PATTERN_COMPONENTS
 
 export default function Lobby() {
+  const sidebarRef = useRef<HTMLDivElement | null>(null)
+  const otherasideRef = useRef<HTMLDivElement | null>(null)
+
   const navigate = useNavigate()
   const storedSkin = typeof window !== 'undefined'
     ? JSON.parse(localStorage.getItem('equippedSkin') || '{}')
@@ -86,20 +91,59 @@ export default function Lobby() {
     return () => {
     }
   }, [])
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(e.target as Node)
+      ) {
+        document.querySelector(".sidebar")
+          ?.classList.add("-left-full")
+      }
+      if (
+        otherasideRef.current &&
+        !otherasideRef.current.contains(e.target as Node)
+      ) {
+        document.querySelector(".infoaside")
+          ?.classList.replace("left-[calc(100%-20rem)]", "-left-full")
+      }
+    }
 
+    document.addEventListener("mousedown", handleOutsideClick)
 
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick)
+    }
+  }, [])
+
+  const handlesidebar = () => {
+    document.querySelector(".sidebar")?.classList.remove("-left-full")
+  }
+  const handleinfoaside = () => {
+    document.querySelector(".infoaside")?.classList.replace("-left-full", "left-[calc(100%-20rem)]")
+  }
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-[#f5f8f8] dark:bg-[#102122] text-slate-900 dark:text-white font-['Space_Grotesk']"
+      className="min-h-screen bg-[#f5f8f8] dark:bg-[#102122] text-slate-900 dark:text-white font-['Space_Grotesk'] overflow-hidden "
     >
       <div className="flex h-screen overflow-hidden">
-        <Aside page="lobby" />
+        <div ref={sidebarRef}>
+          <Aside page="lobby" />
+        </div>
 
-        <main className="flex-1 flex flex-col overflow-y-auto p-8 gap-8 custom-scrollbar">
+        <main className="flex-1 flex flex-col overflow-y-auto p-4 sm:p-8 gap-8 custom-scrollbar">
+          <div className='flex items-center justify-between md:justify-end '>
+            <GiHamburgerMenu onClick={handlesidebar} className='text-3xl cursor-pointer md:hidden ' />
+            <div className='bg-[#0ddff2] w-16 h-16 rounded-full flex items-center justify-center md:hidden '>
+              <GiSnake className='text-3xl text-[#102122]' />
+            </div>
+            <FaInfoCircle  onClick={handleinfoaside} className='text-3xl cursor-pointer block float-right text-right xl:hidden' />
+
+          </div>
           <motion.header
             initial={{ y: -40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -126,9 +170,9 @@ export default function Lobby() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.96 }}
                 onClick={handlejoinroom}
-                className="relative flex min-w-70 items-center justify-center overflow-hidden rounded-full h-16 px-10 bg-[#0ddff2] text-[#102122] gap-3 text-xl font-bold shadow-lg shadow-[#0ddff2]/40 cursor-pointer"
+                className="relative flex min-w-70 items-center justify-center overflow-hidden rounded-full h-16 px-10 bg-[#0ddff2] text-[#102122] gap-3 text-lg sm:text-xl font-bold shadow-lg shadow-[#0ddff2]/40 cursor-pointer"
               >
-                <FaPlay className="text-2xl" />
+                <FaPlay className=" text-xl sm:text-2xl" />
                 START NEW MATCH
               </motion.button>
             </div>
@@ -167,7 +211,7 @@ export default function Lobby() {
             transition={{ delay: 0.4, duration: 0.8 }}
             className="grid grid-cols-1 lg:grid-cols-2 gap-8"
           >
-            <div className="bg-slate-100 relative dark:bg-[#1a2e30] rounded-xl p-6 border border-slate-200 dark:border-slate-800">
+            <div className="bg-slate-100 relative dark:bg-[#1a2e30] rounded-xl p-3 sm:p-6 border border-slate-200 dark:border-slate-800">
               <GlowingEffect
                 blur={0}
                 borderWidth={3}
@@ -296,8 +340,10 @@ export default function Lobby() {
             </div>
           </motion.div>
         </main>
-
+        <div ref={otherasideRef}>
+          
         <GameLobby />
+        </div>
       </div>
       {
         load && <Loader text="Joining room..." color="#0ddff2" />

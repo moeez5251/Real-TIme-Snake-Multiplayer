@@ -1,40 +1,61 @@
 import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Aside from './aside'
 import { SKINS } from './skins'
 import { useSound } from '../context/sound'
+import { GiHamburgerMenu } from 'react-icons/gi'
 
 export default function SkinStore() {
   const [equippedSkinId, setEquippedSkinId] = useState(1)
   const { playSound } = useSound()
+  const sidebarRef = useRef<HTMLDivElement | null>(null)
 
   const handleEquip = (skinId: number) => {
     playSound("click")
     setEquippedSkinId(skinId)
-    const oldSkin = JSON.parse(localStorage.getItem('equippedSkin')||'{}')
-   localStorage.setItem('equippedSkin', JSON.stringify({
-    ...oldSkin,
-    color:SKINS.find((skin) => skin.id === skinId)?.color,
-   }))
+    const oldSkin = JSON.parse(localStorage.getItem('equippedSkin') || '{}')
+    localStorage.setItem('equippedSkin', JSON.stringify({
+      ...oldSkin,
+      color: SKINS.find((skin) => skin.id === skinId)?.color,
+    }))
   }
   useEffect(() => {
     playSound("lobby")
-    const skin = JSON.parse(localStorage.getItem('equippedSkin')||'{}') 
+    const skin = JSON.parse(localStorage.getItem('equippedSkin') || '{}')
     if (skin) {
-      const id=SKINS.find((sk) => sk.color === skin.color)?.id
-      if(!id) return
+      const id = SKINS.find((sk) => sk.color === skin.color)?.id
+      if (!id) return
       setEquippedSkinId(id)
     }
     else {
       localStorage.setItem('equippedSkin', JSON.stringify({
-        color:SKINS[0].color,
-        pattern:"Solid"
+        color: SKINS[0].color,
+        pattern: "Solid"
       }))
     }
     return () => {
     }
   }, [])
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(e.target as Node)
+      ) {
+        document.querySelector(".sidebar")
+          ?.classList.add("-left-full")
+      }
+    }
 
+    document.addEventListener("mousedown", handleOutsideClick)
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick)
+    }
+  }, [])
+  const handlesidebar = () => {
+    document.querySelector(".sidebar")?.classList.remove("-left-full")
+  }
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -44,9 +65,11 @@ export default function SkinStore() {
       className="min-h-screen bg-[#f5f8f8] dark:bg-[#102122] text-slate-900 dark:text-white font-['Space_Grotesk']"
     >
       <div className="flex h-screen overflow-hidden">
-        <Aside page="skinstore" />
+        <div ref={sidebarRef}>
+          <Aside page="skinstore" />
+        </div>
+        <main className="flex-1 flex flex-col overflow-y-auto p-4 sm:p-8 gap-8 custom-scrollbar">
 
-        <main className="flex-1 flex flex-col overflow-y-auto p-8 gap-8 custom-scrollbar">
           <motion.div
             initial={{ y: -30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -54,10 +77,14 @@ export default function SkinStore() {
             className="flex items-center gap-4 mb-8"
           >
 
+            <div className='flex flex-col gap-3'>
 
-            <h1 className="text-4xl font-bold text-[#0ddff2] uppercase tracking-wider">
-              Skin Store
-            </h1>
+              <GiHamburgerMenu onClick={handlesidebar} className='text-3xl cursor-pointer md:hidden' />
+
+              <h1 className="text-4xl font-bold text-[#0ddff2] uppercase tracking-wider">
+                Skin Store
+              </h1>
+            </div>
           </motion.div>
 
           <motion.div
@@ -139,6 +166,6 @@ export default function SkinStore() {
 
 
       </div>
-    </motion.div>
+    </motion.div >
   )
 }

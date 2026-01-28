@@ -332,6 +332,7 @@ const Canvas: React.FC = () => {
         stamina={staminaRef.current}
         onRespawn={handleRespawn}
         customSkin={customSkin}
+        roomId={ROOM_ID.current}
       />
       <Leaderboard snakes={gameState?.snakes || []} myId={myIdRef.current} />
       <Alerts alerts={alerts} />

@@ -8,9 +8,10 @@ interface HUDProps {
   stamina: number;
   onRespawn: () => void;
   customSkin: any;
+  roomId: string
 }
 
-const HUD: React.FC<HUDProps> = ({ mySnake, boosting, stamina, onRespawn, customSkin }) => {
+const HUD: React.FC<HUDProps> = ({ mySnake, boosting, stamina, onRespawn, customSkin,roomId }) => {
   const { ping } = useSocket()
   return (
     <div className="absolute top-20 left-6 z-40 bg-[#183234]/90 p-4 rounded-2xl backdrop-blur-md border border-[#316368] w-60">
@@ -30,6 +31,8 @@ const HUD: React.FC<HUDProps> = ({ mySnake, boosting, stamina, onRespawn, custom
 
       <p className="text-sm my-2">Length: {mySnake?.body.length || 0}</p>
       <p className="text-sm my-2">Score: {mySnake?.score || 0}</p>
+      <p className="text-sm my-2">Room ID: {roomId || 0}</p>
+          
       <p className="text-sm my-2">Boost: {boosting ? "ON" : "READY"} ({stamina.toFixed(0)})</p>
       <button
         onClick={onRespawn}

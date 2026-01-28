@@ -1,31 +1,35 @@
-
 @import "tailwindcss";
+
 * {
   font-family: "Poppins", sans-serif;
 }
-:root{
+
+:root {
   --background-color: #102122;
 }
-body{
+
+body {
   background-color: var(--background-color);
 }
 
 .neon-glow {
 
-box-shadow: 0 0 20px rgba(13, 227, 242, 0.4);
+  box-shadow: 0 0 20px rgba(13, 227, 242, 0.4);
 
 }
+
 @theme inline {
-  --animate-cell-ripple: cell-ripple var(--duration, 200ms) ease-out none 1
-    var(--delay, 0ms);
+  --animate-cell-ripple: cell-ripple var(--duration, 200ms) ease-out none 1 var(--delay, 0ms);
 
   @keyframes cell-ripple {
     0% {
       opacity: 0.4;
     }
+
     50% {
       opacity: 0.8;
     }
+
     100% {
       opacity: 0.4;
     }
@@ -33,14 +37,17 @@ box-shadow: 0 0 20px rgba(13, 227, 242, 0.4);
 }
 
 .custom-scrollbar {
-  scrollbar-width: thin;           /* Firefox */
-  scrollbar-color: #0ddff2 #1a2e30; /* Firefox */
+  scrollbar-width: thin;
+  /* Firefox */
+  scrollbar-color: #0ddff2 #1a2e30;
+  /* Firefox */
 }
 
 /* Chrome, Edge, Safari */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
-  height: 6px; /* for horizontal scrollbar if needed */
+  height: 6px;
+  /* for horizontal scrollbar if needed */
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
@@ -51,11 +58,13 @@ box-shadow: 0 0 20px rgba(13, 227, 242, 0.4);
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: #0ddff2;
   border-radius: 10px;
-  border: 2px solid #102122; /* creates nice "floating" effect */
+  border: 2px solid #102122;
+  /* creates nice "floating" effect */
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #39ff14; /* neon green on hover */
+  background: #39ff14;
+  /* neon green on hover */
   box-shadow: 0 0 10px #39ff14;
 }
 

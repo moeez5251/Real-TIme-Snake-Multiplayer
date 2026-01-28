@@ -23,9 +23,10 @@ const Aside = ({ page }: { page: string }) => {
       initial={{ x: -80, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className="w-72 shrink-0 bg-[#f5f8f8] dark:bg-[#102122] border-r border-slate-200 dark:border-slate-800 flex flex-col p-6"
+      exit={{x:-1000}}
+      className="w-72 shrink-0 bg-[#f5f8f8] dark:bg-[#102122] border-r border-slate-200 dark:border-slate-800 absolute  -left-full  z-10 h-full md:relative md:left-0 flex transition-all flex-col p-6 sidebar"
     >
-      <div onClick={() => setCurrentPage("lobby")} className="flex items-center gap-3 mb-10 cursor-pointer">
+      <div onClick={() => {setCurrentPage("lobby");}} className="flex items-center gap-3 mb-10 cursor-pointer">
         <motion.div
           whileHover={{ scale: 1.12, rotate: 10 }}
           transition={{ type: 'spring', stiffness: 400, damping: 17 }}
@@ -45,7 +46,7 @@ const Aside = ({ page }: { page: string }) => {
         <motion.button
           whileHover={{ scale: 1.04 }}
           whileTap={{ scale: 0.96 }}
-          onClick={() => { setCurrentPage("lobby"); playSound('click') }}
+          onClick={() => { setCurrentPage("lobby"); playSound('click'); }}
           className={`${page === "lobby" ? "flex items-center gap-4 px-4 py-3 rounded-full bg-[#0ddff2] text-[#102122] font-bold cursor-pointer" : "flex items-center gap-4 px-4 py-3 rounded-full hover:bg-slate-100 dark:hover:bg-[#1a2e30] transition-colors cursor-pointer text-slate-600 dark:text-slate-300"} `}
         >
           <FaHome />

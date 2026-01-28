@@ -8,8 +8,8 @@ export function createSnake(socketId, name, skin, room) {
   const maxAttempts = 50;
 
   do {
-    x = Math.floor(Math.random() * WIDTH);
-    y = Math.floor(Math.random() * HEIGHT);
+    x = WIDTH/2;
+    y = HEIGHT/2;
     attempts++;
   } while (attempts < maxAttempts && room.snakes.some(s => s.body.some(seg => seg.x === x && seg.y === y)));
 
