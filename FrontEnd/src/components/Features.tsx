@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BsFillLightningChargeFill } from "react-icons/bs";
 import { MdOutlineFlare } from "react-icons/md";
 import { IoIosColorPalette } from "react-icons/io";
 import { motion } from "framer-motion";
 import type { Variants } from 'framer-motion';
+import { CardSpotlight } from "../../components/ui/card-spotlight";
 
 const container: Variants = {
     hidden: {},
@@ -25,8 +26,11 @@ const cardAnim: Variants = {
 };
 
 const Features: React.FC = () => {
+    const [isHovering, setIsHovering] = useState(false);
+    const handleMouseEnter = () => setIsHovering(true);
+    const handleMouseLeave = () => setIsHovering(false);
     return (
-        <section className="py-24 px-6 relative bg-black">
+        <section className="py-24 px-3 sm:px-6 relative bg-black">
             <div className="max-w-[1200px] mx-auto">
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
                     <div className="max-w-xl">
@@ -45,7 +49,7 @@ const Features: React.FC = () => {
                     <motion.p
                         initial={{ scale: 0.7, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                            transition={{ duration: 0.5 }}
+                        transition={{ duration: 0.5 }}
 
                         className="text-slate-400 max-w-sm">
                         Hone your skills and climb the ranks with tactical gameplay and unique visual upgrades.
@@ -59,45 +63,62 @@ const Features: React.FC = () => {
                     whileInView="visible"
                     viewport={{ once: true, amount: 0.2 }}
                 >
-                    <motion.div
-                        className="group p-8 rounded-xl bg-gradient-to-br from-white/5 to-transparent border border-white/10 hover:border-[#0ddff2]/50 transition-all duration-300"
-                        variants={cardAnim}
-                    >
-                        <div className="size-14 rounded-full bg-[#0ddff2]/10 flex items-center justify-center text-[#0ddff2] mb-6 group-hover:scale-110 transition-transform">
-                            <BsFillLightningChargeFill className="text-3xl" />
-                        </div>
-                        <h4 className="text-xl font-bold text-white mb-3">Real-time Combat</h4>
-                        <p className="text-slate-400 text-sm leading-relaxed">
-                            Lag-free 60FPS action powered by our proprietary global network. Every pixel-perfect turn matters.
-                        </p>
+                    <motion.div variants={cardAnim}>
+                        <CardSpotlight className="p-0 rounded-xl">
+                            <div className="group p-8 rounded-xl border border-white/10 bg-white/5">
+                                <div className="size-14 rounded-full bg-[#0ddff2]/10 flex items-center justify-center text-[#0ddff2] mb-6 group-hover:scale-110 transition-transform">
+                                    <BsFillLightningChargeFill className="text-3xl" />
+                                </div>
+
+                                <h4 className="text-xl font-bold text-white mb-3">
+                                    Real-time Combat
+                                </h4>
+
+                                <p className="text-slate-400 text-sm leading-relaxed">
+                                    Lag-free 60FPS action powered by our proprietary global network. Every pixel-perfect turn matters.
+                                </p>
+                            </div>
+                        </CardSpotlight>
                     </motion.div>
 
-                    <motion.div
-                        className="group p-8 rounded-xl bg-gradient-to-br from-white/5 to-transparent border border-white/10 hover:border-[#a855f7]/50 transition-all duration-300"
-                        variants={cardAnim}
-                    >
-                        <div className="size-14 rounded-full bg-[#a855f7]/10 flex items-center justify-center text-[#a855f7] mb-6 group-hover:scale-110 transition-transform">
-                            <MdOutlineFlare className="text-3xl" />
-                        </div>
-                        <h4 className="text-xl font-bold text-white mb-3">Unique Power-ups</h4>
-                        <p className="text-slate-400 text-sm leading-relaxed">
-                            Deploy mass magnets, kinetic shields, and light-speed boosts to turn the tide of battle in seconds.
-                        </p>
+                    <motion.div variants={cardAnim}>
+                        <CardSpotlight className="p-0 rounded-xl">
+                            <div className="group p-8 rounded-xl border border-white/10 bg-white/5">
+                                <div className="size-14 rounded-full bg-[#a855f7]/10 flex items-center justify-center text-[#a855f7] mb-6 group-hover:scale-110 transition-transform">
+                                    <MdOutlineFlare className="text-3xl" />
+                                </div>
+
+                                <h4 className="text-xl font-bold text-white mb-3">
+                                    Unique Power-ups
+                                </h4>
+
+                                <p className="text-slate-400 text-sm leading-relaxed">
+                                    Deploy mass magnets, kinetic shields, and light-speed boosts to turn the tide of battle in seconds.
+                                </p>
+                            </div>
+                        </CardSpotlight>
                     </motion.div>
 
-                    <motion.div
-                        className="group p-8 rounded-xl bg-gradient-to-br from-white/5 to-transparent border border-white/10 hover:border-[#0ddff2]/50 transition-all duration-300"
-                        variants={cardAnim}
-                    >
-                        <div className="size-14 rounded-full bg-[#0ddff2]/10 flex items-center justify-center text-[#0ddff2] mb-6 group-hover:scale-110 transition-transform">
-                            <IoIosColorPalette className="text-3xl" />
-                        </div>
-                        <h4 className="text-xl font-bold text-white mb-3">Custom Skins</h4>
-                        <p className="text-slate-400 text-sm leading-relaxed">
-                            Express yourself with thousands of neon trails, digital textures, and animated core patterns.
-                        </p>
+                
+                    <motion.div variants={cardAnim}>
+                        <CardSpotlight className="p-0 rounded-xl">
+                            <div className="group p-8 rounded-xl border border-white/10 bg-white/5">
+                                <div className="size-14 rounded-full bg-[#0ddff2]/10 flex items-center justify-center text-[#0ddff2] mb-6 group-hover:scale-110 transition-transform">
+                                    <IoIosColorPalette className="text-3xl" />
+                                </div>
+
+                                <h4 className="text-xl font-bold text-white mb-3">
+                                    Custom Skins
+                                </h4>
+
+                                <p className="text-slate-400 text-sm leading-relaxed">
+                                    Express yourself with thousands of neon trails, digital textures, and animated core patterns.
+                                </p>
+                            </div>
+                        </CardSpotlight>
                     </motion.div>
                 </motion.div>
+
             </div>
         </section>
     );

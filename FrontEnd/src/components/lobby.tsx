@@ -23,6 +23,7 @@ import { useNavigate } from "react-router";
 import { GlowingEffect } from '../../components/ui/glowing-effect'
 import { useSound } from '../context/sound'
 import Loader from './loader'
+import { LuLoaderCircle } from "react-icons/lu";
 const COLORS = ['#0ddff2', '#39ff14', '#ff00ff', '#ffff00', '#ff3131', '#ffffff']
 const PATTERN_COMPONENTS = {
   Solid: SolidPattern,
@@ -36,7 +37,7 @@ type PatternType = keyof typeof PATTERN_COMPONENTS
 export default function Lobby() {
   const sidebarRef = useRef<HTMLDivElement | null>(null)
   const otherasideRef = useRef<HTMLDivElement | null>(null)
-
+  const [connected, setConnected] = useState(false)
   const navigate = useNavigate()
   const storedSkin = typeof window !== 'undefined'
     ? JSON.parse(localStorage.getItem('equippedSkin') || '{}')
@@ -51,7 +52,9 @@ export default function Lobby() {
   const { playSound } = useSound()
   const handlejoinroom = () => {
     playSound("click")
+    if (socket.disconnected) return
     setLoad(true)
+
     socket.emit("createRoom", () => { })
     socket.on("room-created", (data) => {
       navigate(`/room/${data.id}`)
@@ -115,6 +118,12 @@ export default function Lobby() {
       document.removeEventListener("mousedown", handleOutsideClick)
     }
   }, [])
+  socket.on("connect", () => {
+    setConnected(true)
+  })
+  socket.on("disconnect", () => {
+    setConnected(false)
+  })
 
   const handlesidebar = () => {
     document.querySelector(".sidebar")?.classList.remove("-left-full")
@@ -141,7 +150,7 @@ export default function Lobby() {
             <div className='bg-[#0ddff2] w-16 h-16 rounded-full flex items-center justify-center md:hidden '>
               <GiSnake className='text-3xl text-[#102122]' />
             </div>
-            <FaInfoCircle  onClick={handleinfoaside} className='text-3xl cursor-pointer block float-right text-right xl:hidden' />
+            <FaInfoCircle onClick={handleinfoaside} className='text-3xl cursor-pointer block float-right text-right xl:hidden' />
 
           </div>
           <motion.header
@@ -340,9 +349,14 @@ export default function Lobby() {
             </div>
           </motion.div>
         </main>
+        {
+          connected || socket.disconnected &&
+          <Loader text="Connection lost. Reconnecting..." color="#0ddff2" />
+        }
+
         <div ref={otherasideRef}>
-          
-        <GameLobby />
+
+          <GameLobby />
         </div>
       </div>
       {

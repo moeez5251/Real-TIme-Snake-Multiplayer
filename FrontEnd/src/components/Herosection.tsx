@@ -3,6 +3,7 @@ import { FaArrowRight } from 'react-icons/fa'
 import { useSound } from '../context/sound'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+
 const Herosection = () => {
     const { playSound } = useSound()
     const navigate = useNavigate()
@@ -55,7 +56,7 @@ const Herosection = () => {
                         }}
 
                         transition={{ duration: 0.8, ease: "easeOut" }}
-                        className="text-5xl md:text-8xl font-black tracking-tighter text-white leading-none">
+                        className="text-5xl sm:text-8xl font-black tracking-tighter text-white leading-none">
 
                         THE ULTIMATE <br />
 
@@ -94,7 +95,7 @@ const Herosection = () => {
                                     ease: "easeIn"
                                 }
                             }}
-                        className="max-w-2xl text-lg text-slate-400 font-medium"
+                        className="sm:max-w-2xl max-w-[90%] my-5 sm:my-0 text-lg text-slate-400 font-medium"
                     >
 
 

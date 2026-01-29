@@ -21,10 +21,10 @@ const Navbar = () => {
 
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 onClick={() => navigate("/")} className='flex items-center gap-1 cursor-pointer'>
-                <div className='bg-[#0ddff2] w-10 h-10 rounded-full flex items-center justify-center '>
-                    <GiSnake className='text-3xl text-[#102122]' />
+                <div className='bg-[#0ddff2] w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center '>
+                    <GiSnake className=' text-xl sm:text-3xl text-[#102122]' />
                 </div>
-                <div className='font-semibold text-3xl'>
+                <div className='font-semibold text-xl sm:text-3xl'>
                     SLITHER UP
                 </div>
             </motion.div>
@@ -42,7 +42,7 @@ const Navbar = () => {
 
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 onClick={() => { playSound("click"); localStorage.getItem("username") ? navigate("/lobby") :    navigate("/verify") }}
-                className="bg-[#0ddff2] text-[#102122] px-6 py-2.5 rounded-full text-base font-bold neon-glow hover:scale-105 transition-transform cursor-pointer"
+                className="bg-[#0ddff2] text-[#102122] px-3 sm:px-6 py-1.5 sm:py-2.5 rounded-full text-base font-bold neon-glow hover:scale-105 transition-transform cursor-pointer"
             >
                 Join Arena
             </motion.button>

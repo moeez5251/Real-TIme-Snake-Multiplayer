@@ -111,7 +111,7 @@ const UserName = () => {
                     }}
                     className="
                     bg-white/85
-                    w-1/3
+                    sm:w-1/3
                     mx-auto
                     px-10
                     py-8

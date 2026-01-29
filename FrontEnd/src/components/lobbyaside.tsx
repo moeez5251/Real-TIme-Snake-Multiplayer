@@ -24,7 +24,7 @@ const GameLobby: React.FC = () => {
       <h3 className="text-white text-2xl font-bold mb-6 flex items-center gap-2 tracking-tight uppercase">
         <FaInfoCircle className="text-[#0ddff2]" /> Game Lobby
         <RxCross1 onClick={()=>{document.querySelector(".infoaside")
-          ?.classList.replace("left-[calc(100%-20rem)]", "-left-full");playSound("click")}} className="text-[#0ddff2] absolute right-2.5 cursor-pointer z-20" /> 
+          ?.classList.replace("left-[calc(100%-20rem)]", "-left-full");playSound("click")}} className="text-[#0ddff2] absolute right-2.5 cursor-pointer z-20 xl:hidden" /> 
 
       </h3>
 

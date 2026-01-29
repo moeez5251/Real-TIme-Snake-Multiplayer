@@ -61,7 +61,6 @@ const StyledWrapper = styled.div<{ color: string }>`
     font-size: 1.2rem;
     font-weight: bold;
     text-align: center;
-    font-family: "Space Grotesk", sans-serif;
   }
 `;
 
