@@ -1,20 +1,40 @@
 import Lenis from 'lenis';
 import { useEffect } from 'react';
-const useLenis = (t: number) => {
+
+declare global {
+  interface Window {
+    lenis: Lenis;
+  }
+}
+
+const useLenis = () => {
   useEffect(() => {
     const lenis = new Lenis({
-      duration:t,
-      easing: (t: number) => t, // Linear easing; you can customize
-      gestureOrientation: 'vertical',
+      duration: 1,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
     });
 
-    const raf = (time: number) => {
+    const handleAnimationFrame = (time: number) => {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      requestAnimationFrame(handleAnimationFrame);
     };
-    requestAnimationFrame(raf);
 
-    return () => lenis.destroy(); // Cleanup on unmount
+    requestAnimationFrame(handleAnimationFrame);
+    window.lenis = lenis;
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (this: HTMLAnchorElement, e: Event) {
+        e.preventDefault();
+        const href = this.getAttribute('href');
+        if (href) {
+          lenis.scrollTo(href);
+        }
+      });
+    })
+
+    return () => {
+      lenis.destroy();
+    };
   }, []);
 };
 

@@ -1,12 +1,13 @@
 import React from "react";
 import { FiArrowUp, FiArrowDown, FiArrowLeft, FiArrowRight } from "react-icons/fi";
 import { FaSpaceShuttle, FaAppleAlt, FaSkullCrossbones } from "react-icons/fa";
-
+import useIsMobile from "../hooks/isinmobile";
 interface PopupProps {
   setShowHowToPlay: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Popup: React.FC<PopupProps> = ({ setShowHowToPlay }) => {
+  const isMobile = useIsMobile({width:1300});
   return (
     <div className="fixed inset-0 z-52 flex items-center justify-center bg-black/80 backdrop-blur-md px-4">
       <div className="relative bg-[#102122] border border-[#224649] rounded-3xl p-8 max-w-lg w-full shadow-2xl">
@@ -32,15 +33,22 @@ const Popup: React.FC<PopupProps> = ({ setShowHowToPlay }) => {
               <FiArrowLeft />
               <FiArrowRight />
             </div>
-            <p className="text-[#c0e8f0] text-left">or WASD to move your snake</p>
+            {
+              isMobile ?
+              <p className="text-[#c0e8f0] text-left">Swipe to move your snake</p> :
+              <p className="text-[#c0e8f0] text-left">or WASD to move your snake</p>
+            }
           </div>
 
-          {/* Boost */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-4">
             <div className="text-2xl text-[#0ddff2] font-bold">
               <FaSpaceShuttle />
             </div>
-            <p className="text-[#c0e8f0] text-left">Hold SPACE to boost (consumes stamina)</p>
+            {
+              isMobile ?
+              <p className="text-[#c0e8f0] text-left">Double tap your snake to boost (consumes stamina)</p> :
+              <p className="text-[#c0e8f0] text-left">Hold SPACE to boost (consumes stamina)</p>
+            }
           </div>
 
           {/* Food */}

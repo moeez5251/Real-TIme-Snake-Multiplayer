@@ -7,11 +7,11 @@ interface AlertsProps {
 
 const Alerts: React.FC<AlertsProps> = ({ alerts }) => {
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3 pointer-events-none">
+    <div className="fixed bottom-6 right-0 sm:right-6 z-50 flex flex-col gap-3 pointer-events-none">
       <AnimatePresence mode="popLayout">
         {alerts.map((message, index) => (
           <motion.div
-            key={message + index} // better key stability (in case same message appears twice)
+            key={message + index} 
             initial={{ 
               opacity: 0, 
               y: 20, 
@@ -49,10 +49,12 @@ const Alerts: React.FC<AlertsProps> = ({ alerts }) => {
               backdrop-blur-sm 
               border border-white/8 
               font-medium 
-              text-sm 
+              text-xs
+              sm:text-sm 
               tracking-tight 
               flex items-center gap-2.5
-              min-w-[220px]
+              min-w-fit
+              sm:min-w-[220px]
               max-w-[380px]
             "
           >

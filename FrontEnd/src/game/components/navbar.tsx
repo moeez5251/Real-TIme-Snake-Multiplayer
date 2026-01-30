@@ -9,12 +9,12 @@ const Navbar = ({setShowHowToPlay}: {setShowHowToPlay: React.Dispatch<React.SetS
             <motion.div
               whileHover={{ scale: 1.12, rotate: 10 }}
               transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-              className="size-12 rounded-full bg-[#0ddff2] flex items-center justify-center neon-glow"
+              className="size-8 sm:size-12 rounded-full bg-[#0ddff2] flex items-center justify-center neon-glow"
             >
-              <GiSnake className="text-[#102122] text-3xl" />
+              <GiSnake className="text-[#102122] sm:text-3xl" />
             </motion.div>
             <div>
-              <h2 className="text-xl font-bold tracking-tight text-[#0ddff2]">SLITHER.UP</h2>
+              <h2 className="sm:text-xl font-bold tracking-tight text-[#0ddff2]">SLITHER.UP</h2>
               <p className="text-xs text-slate-500 dark:text-[#90c6cb] uppercase tracking-widest font-bold">
                 Multiplayer
               </p>

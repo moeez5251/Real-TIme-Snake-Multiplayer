@@ -5,13 +5,20 @@ import type { Snake } from "../types/game";
 interface LeaderboardProps {
   snakes: Snake[];
   myId: string | null;
+  ref: React.RefObject<HTMLDivElement | null>;
 }
 
-const Leaderboard: React.FC<LeaderboardProps> = ({ snakes, myId }) => {
+const Leaderboard: React.FC<LeaderboardProps> = ({ snakes, myId, ref }) => {
   const sorted = [...snakes].sort((a, b) => (b.score || 0) - (a.score || 0));
 
   return (
-    <aside className="absolute top-0 right-0 bottom-0 w-72 bg-[#102122]/90 backdrop-blur-sm border-l border-[#224649] z-30 overflow-hidden">
+    <motion.aside
+      initial={{ x: 1000, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.6 }}
+      ref={ref}
+      className="absolute top-0 right-0 bottom-0 w-64 sm:w-72 bg-[#102122]/90 backdrop-blur-sm border-l border-[#224649] z-30 overflow-hidden">
+
       <div className="p-6 flex flex-col h-full">
         <h3 className="text-lg font-bold mb-5 text-white/90">Top Hunters</h3>
 
@@ -36,10 +43,9 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ snakes, myId }) => {
                     transition: { duration: 0.2 },
                   }}
                   className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer
-                    ${
-                      s.id === myId
-                        ? "bg-[#0ddff2]/20 border border-[#0ddff2]"
-                        : "bg-[#183234]/60 hover:bg-[#0ddff2]/10"
+                    ${s.id === myId
+                      ? "bg-[#0ddff2]/20 border border-[#0ddff2]"
+                      : "bg-[#183234]/60 hover:bg-[#0ddff2]/10"
                     }
                     transition-colors duration-150`}
                 >
@@ -63,7 +69,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ snakes, myId }) => {
           </div>
         </LayoutGroup>
       </div>
-    </aside>
+    </motion.aside>
   );
 };
 

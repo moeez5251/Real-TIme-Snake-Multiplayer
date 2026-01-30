@@ -163,8 +163,6 @@ export default function SkinStore() {
             })}
           </motion.div>
         </main>
-
-
       </div>
     </motion.div >
   )

@@ -7,7 +7,7 @@ import { BackgroundRippleEffect } from './GridDemoBg'
 import { useSound } from '../context/sound'
 import useLenis from './lenis'
 const Home = () => {
-  useLenis(0.4)
+  useLenis()
   const {stopSound}=useSound()
   useEffect(() => {
     stopSound("lobby");
