@@ -28,8 +28,7 @@ app.use(cors(corsOptions));
 export const io = new Server(server, {
   cors: corsOptions
 });
-
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 io.use((socket, next) => {
   const origin = socket.handshake.headers.origin;
 
