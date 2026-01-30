@@ -1,15 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import "tailwindcss";
 
-@theme{
+@theme {
   --font-poppins: "Poppins", sans-serif;
 }
+
 :root {
   --background-color: #102122;
 }
 
-body {
+* {
   font-family: "Poppins", sans-serif;
+}
+
+body {
+  @apply font-poppins;
   background-color: var(--background-color);
 }
 
@@ -18,9 +23,11 @@ body {
   box-shadow: 0 0 20px rgba(13, 227, 242, 0.4);
 
 }
-h1{
-font-weight: bolder;
+
+h1 {
+  font-weight: bolder;
 }
+
 @theme inline {
   --animate-cell-ripple: cell-ripple var(--duration, 200ms) ease-out none 1 var(--delay, 0ms);
 
