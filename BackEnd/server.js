@@ -5,12 +5,40 @@ import { v4 as uuidv4 } from "uuid";
 import { WIDTH, HEIGHT, TICK_RATE } from "./game/constants.js";
 import { createSnake, gameTick } from "./game/snake.js";
 import { rooms, getSafeRoomData, getSafeSnake, getActiveRooms, broadcastGlobalPlayers } from "./utils/rooms.js";
-
+import { configDotenv } from "dotenv";
+import cors from "cors";
+configDotenv();
 const app = express();
+
 const server = http.createServer(app);
-export const io = new Server(server, { cors: { origin: "*" } });
+const allowedOrigins = [process.env.CLIENT_URL];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  }
+};
+
+app.use(cors(corsOptions));
+
+export const io = new Server(server, {
+  cors: corsOptions
+});
 
 const PORT = 3000;
+io.use((socket, next) => {
+  const origin = socket.handshake.headers.origin;
+
+  if (origin !== process.env.CLIENT_URL) {
+    return next(new Error("Forbidden origin"));
+  }
+
+  next();
+});
 
 io.on("connection", socket => {
   let currentRoomId = null;
