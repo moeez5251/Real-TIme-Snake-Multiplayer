@@ -52,7 +52,7 @@ A modern, real-time multiplayer snake game built with React, TypeScript, and Soc
 1. Clone the repository:
 
 ```bash
-git clone `https://github.com/moeez5251/real-TIme-Snake-Multiplayer`
+git clone https://github.com/moeez5251/real-TIme-Snake-Multiplayer
 ```
 
 2. Install dependencies for both frontend and backend:
