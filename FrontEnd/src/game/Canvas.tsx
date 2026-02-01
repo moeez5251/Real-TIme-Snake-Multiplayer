@@ -17,7 +17,7 @@ const Canvas: React.FC = () => {
   const [hud, sethud] = useState(false)
   const lastFoodRef = useRef<{ x: number; y: number } | null>(null);
   const [leaderboard, setleaderboard] = useState(false)
-  const isMobile = useIsMobile({ width: 1300 });
+  const isMobile = useIsMobile({ width: 1260 });
   const { playSound, stopSound } = useSound();
   const params = useParams();
   const navigate = useNavigate();
