@@ -4,8 +4,9 @@ import Aside from './aside'
 import { SKINS } from './skins'
 import { useSound } from '../context/sound'
 import { GiHamburgerMenu } from 'react-icons/gi'
-
+import useLenis from './lenis'
 export default function SkinStore() {
+  useLenis()
   const [equippedSkinId, setEquippedSkinId] = useState(1)
   const { playSound } = useSound()
   const sidebarRef = useRef<HTMLDivElement | null>(null)
@@ -68,7 +69,9 @@ export default function SkinStore() {
         <div ref={sidebarRef}>
           <Aside page="skinstore" />
         </div>
-        <main className="flex-1 flex flex-col overflow-y-auto p-4 sm:p-8 gap-8 custom-scrollbar">
+        <main
+          data-lenis
+          className="flex-1 flex flex-col overflow-y-auto p-4 sm:p-8 gap-8 custom-scrollbar">
 
           <motion.div
             initial={{ y: -30, opacity: 0 }}

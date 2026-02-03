@@ -90,7 +90,7 @@ const Aside = ({ page }: { page: string }) => {
         <div className="flex flex-col">
           <span className="text-sm font-bold truncate"> {localStorage.getItem("username") ? JSON.parse(localStorage.getItem("username")!) : "Guest"}</span>
         </div>
-        <FaSignOutAlt onClick={handlelogout} className="ml-auto text-slate-400 text-lg cursor-pointer" />
+        <FaSignOutAlt onClick={handlelogout} className="ml-auto text-slate-400 hover:text-[#0ddff2] text-lg transition-colors cursor-pointer" />
       </motion.div>
     </motion.aside>
   )

@@ -23,7 +23,7 @@ import { useNavigate } from "react-router";
 import { GlowingEffect } from '../../components/ui/glowing-effect'
 import { useSound } from '../context/sound'
 import Loader from './loader'
-import { LuLoaderCircle } from "react-icons/lu";
+import useLenis from './lenis';
 const COLORS = ['#0ddff2', '#39ff14', '#ff00ff', '#ffff00', '#ff3131', '#ffffff']
 const PATTERN_COMPONENTS = {
   Solid: SolidPattern,
@@ -35,6 +35,7 @@ const PATTERN_COMPONENTS = {
 type PatternType = keyof typeof PATTERN_COMPONENTS
 
 export default function Lobby() {
+  useLenis()
   const sidebarRef = useRef<HTMLDivElement | null>(null)
   const otherasideRef = useRef<HTMLDivElement | null>(null)
   const [connected, setConnected] = useState(false)
@@ -144,7 +145,9 @@ export default function Lobby() {
           <Aside page="lobby" />
         </div>
 
-        <main className="flex-1 flex flex-col overflow-y-auto p-4 sm:p-8 gap-8 custom-scrollbar">
+        <main
+        data-lenis
+         className="flex-1 flex flex-col overflow-y-auto p-4 sm:p-8 gap-8 custom-scrollbar">
           <div className='flex items-center justify-between md:justify-end '>
             <GiHamburgerMenu onClick={handlesidebar} className='text-3xl cursor-pointer md:hidden ' />
             <div className='bg-[#0ddff2] w-16 h-16 rounded-full flex items-center justify-center md:hidden '>

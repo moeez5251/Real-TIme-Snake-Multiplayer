@@ -48,16 +48,12 @@ h1 {
 
 .custom-scrollbar {
   scrollbar-width: thin;
-  /* Firefox */
   scrollbar-color: #0ddff2 #1a2e30;
-  /* Firefox */
 }
 
-/* Chrome, Edge, Safari */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
   height: 6px;
-  /* for horizontal scrollbar if needed */
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
@@ -69,16 +65,18 @@ h1 {
   background: #0ddff2;
   border-radius: 10px;
   border: 2px solid #102122;
-  /* creates nice "floating" effect */
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #39ff14;
-  /* neon green on hover */
   box-shadow: 0 0 10px #39ff14;
 }
 
-/* Optional: very subtle glow on track when scrolling */
 .custom-scrollbar::-webkit-scrollbar-track-piece {
   background: linear-gradient(to bottom, rgba(13, 223, 242, 0.08), transparent);
+}
+
+::selection {
+  background-color: #0ddff2;
+  color: black;
 }

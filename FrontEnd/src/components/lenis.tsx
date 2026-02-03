@@ -1,41 +1,34 @@
-import Lenis from 'lenis';
-import { useEffect } from 'react';
-
-declare global {
-  interface Window {
-    lenis: Lenis;
-  }
-}
+import Lenis from 'lenis'
+import { useEffect } from 'react'
 
 const useLenis = () => {
   useEffect(() => {
+    const container = document.querySelector(
+      'main[data-lenis]'
+    ) as HTMLElement | null
+
     const lenis = new Lenis({
       duration: 1,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-    });
-
-    const handleAnimationFrame = (time: number) => {
-      lenis.raf(time);
-      requestAnimationFrame(handleAnimationFrame);
-    };
-
-    requestAnimationFrame(handleAnimationFrame);
-    window.lenis = lenis;
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (this: HTMLAnchorElement, e: Event) {
-        e.preventDefault();
-        const href = this.getAttribute('href');
-        if (href) {
-          lenis.scrollTo(href);
-        }
-      });
+      wrapper: container || undefined,
+      content: container || undefined,
     })
 
-    return () => {
-      lenis.destroy();
-    };
-  }, []);
-};
+    let rafId: number
 
-export default useLenis;
+    const raf = (time: number) => {
+      lenis.raf(time)
+      rafId = requestAnimationFrame(raf)
+    }
+
+    requestAnimationFrame(raf)
+
+    return () => {
+      cancelAnimationFrame(rafId)
+      lenis.destroy()
+    }
+  }, [])
+}
+
+export default useLenis

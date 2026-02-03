@@ -31,8 +31,8 @@ const Footer: React.FC = () => {
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
         >
-            <div className="max-w-[1200px] mx-auto">
-                <motion.div className="flex items-center justify-between flex-col sm:flex-row pb-10 px-4" variants={itemVariants}>
+            <div className="max-w-[95%] mx-auto">
+                <motion.div className="flex items-center justify-between flex-col sm:flex-row pb-10 sm:px-4" variants={itemVariants}>
                     <div className='w-full'>
                         <motion.div className="flex items-center gap-3 mb-6" variants={itemVariants}>
                             <motion.div
@@ -51,7 +51,7 @@ const Footer: React.FC = () => {
                         </motion.p>
                     </div>
 
-                    <motion.div className="pt-8 border-white/5 w-full" variants={itemVariants}>
+                    <motion.div className="pt-8 border-white/5  md:text-nowrap" variants={itemVariants}>
                         <motion.p className="text-slate-600 text-sm flex items-center gap-1" variants={itemVariants}>
                             <FaCopyright /> {new Date().getFullYear()} SLITHER UP Entertainment. All rights reserved.
                         </motion.p>
