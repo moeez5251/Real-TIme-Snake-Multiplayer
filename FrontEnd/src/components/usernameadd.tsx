@@ -10,7 +10,7 @@ import { useSound } from '../context/sound';
 import Loader from './loader';
 const UserName = () => {
     const navigate = useNavigate()
-    const { stopSound,toggleMute,playSound } = useSound()
+    const { stopSound, toggleMute, playSound } = useSound()
     const [mutechecker, setmutechecker] = useState(false)
     const [name, setName] = useState("")
     const [load, setLoad] = useState(false)
@@ -54,10 +54,12 @@ const UserName = () => {
     }, [name])
 
     return (
-        <div className='overflow-hidden bg-black '>
+        <div className='overflow-hidden bg-black h-screen'>
+            <div className='relative z-1 '>
 
-            <BackgroundRippleEffect rows={11} />
-            <div className='relative z-20 m-4 flex items-center justify-center h-screen'>
+                <BackgroundRippleEffect rows={11} />
+            </div>
+            <div className='relative z-20 m-4 flex items-center justify-center h-screen  overflow-hidden'>
                 <motion.div
                     initial={{ scale: 0.3 }}
                     animate={{ scale: 1 }}
@@ -77,7 +79,7 @@ const UserName = () => {
                     }
                     {
                         mutechecker &&
-                        <FaVolumeMute onClick={() => { setmutechecker(false); localStorage.setItem('mute', JSON.stringify(false)); toggleMute();playSound("click") }} className='text-2xl cursor-pointer' />
+                        <FaVolumeMute onClick={() => { setmutechecker(false); localStorage.setItem('mute', JSON.stringify(false)); toggleMute(); playSound("click") }} className='text-2xl cursor-pointer' />
                     }
 
                 </motion.div>
@@ -152,7 +154,7 @@ const UserName = () => {
                     <button
                         disabled={!name}
                         onClick={handleclick}
-                            className="
+                        className="
                                 w-full
                                 border
                                 cursor-pointer
